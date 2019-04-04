@@ -9,7 +9,7 @@ EXE = ../bin/Chapter1
 .PHONY: all
 all: $(EXE)
 
-$(EXE): main.o Constants.o
+$(EXE): main.o Constants.o Game.o Log.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 .o: .cpp
