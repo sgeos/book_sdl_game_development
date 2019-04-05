@@ -56,5 +56,8 @@ namespace Constants {
   int FrameWait(void) {
     return 1000 / FramesPerSecond();
   }
+  int AnimationFrames(void) {
+    return 6;
+  }
 }
 

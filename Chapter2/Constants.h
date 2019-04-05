@@ -14,6 +14,7 @@ namespace Constants {
   extern int DefaultRendererWindow(void);
   extern int FramesPerSecond(void);
   extern int FrameWait(void);
+  extern int AnimationFrames(void);
 };
 
 #endif // CONSTANTS_H

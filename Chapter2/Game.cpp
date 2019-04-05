@@ -127,7 +127,7 @@ void Game::reset(void) {
     return;
   }
   const std::string resourcePath = Constants::ResourcePath("");
-  const std::string filename = resourcePath + "rider.bmp";
+  const std::string filename = resourcePath + "animate.bmp";
   SDL_Surface *surface = SDL_LoadBMP(filename.c_str());
   if (nullptr == surface) {
     Log::SdlError(std::cout, "LoadBMP");
@@ -146,6 +146,7 @@ void Game::reset(void) {
   mSourceRectangle.x = 0;
   mSourceRectangle.y = 0;
   SDL_QueryTexture(mTexture, nullptr, nullptr, &mSourceRectangle.w, &mSourceRectangle.h);
+  mSourceRectangle.w /= Constants::AnimationFrames();
   TTF_Font *font = openFont(resourcePath + "twinklebear_ascii.ttf", 32);
   SDL_Color background_color = {0x00, 0x00, 0x00, 0x33};
   mBackground = renderText("Background  ...  ", font, background_color, mRenderer);
@@ -171,7 +172,7 @@ void Game::render(void) {
       renderTexture(mBackground, mRenderer, x, y, tileWidth, tileHeight);
     }
   }
-  SDL_RenderCopy(mRenderer, mTexture, &mSourceRectangle, &mDestinationRectangle);
+  SDL_RenderCopyEx(mRenderer, mTexture, &mSourceRectangle, &mDestinationRectangle, mFrame, nullptr, SDL_FLIP_HORIZONTAL);
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {
     std::cout << Constants::ApplicationName() << " Frame: " << mFrame << std::endl;
@@ -223,6 +224,8 @@ void Game::update(void) {
   mDestinationRectangle.y = centerY * (1.0 + 0.5 * sin((float)mFrame / Constants::FramesPerSecond()));
   mDestinationRectangle.w = imageWidth;
   mDestinationRectangle.h = imageHeight;
+  int animationIndex = mFrame * Constants::AnimationFrames() / Constants::FramesPerSecond() % Constants::AnimationFrames();
+  mSourceRectangle.x = mSourceRectangle.w * animationIndex;
   mFrame++;
 }
 
