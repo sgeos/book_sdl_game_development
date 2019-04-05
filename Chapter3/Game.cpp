@@ -74,8 +74,15 @@ void Game::reset(void) {
   const std::string resourcePath = Constants::ResourcePath("");
   mTextureManager->load(resourcePath + "animate.png", "object", mRenderer);
   mTextureManager->load(resourcePath + "background.png", "background", mRenderer);
-  mGameObject.load(100, 100, 128, 82, "object");
-  mPlayer.load(300, 300, 128, 82, "object");
+
+  mGameObjectList.push_back(new Player());
+  for (int i = 0; i < 3; i++) {
+    mGameObjectList.push_back(new GameObject());
+  }
+  for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
+    int position = i * 100;
+    mGameObjectList[i]->load(position, position, 128, 82, "object");
+  }
   mFrame = 0;
   mDone = mError = false;
 }
@@ -100,8 +107,9 @@ void Game::render(void) {
   int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
   mTextureManager->drawFrame("object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer);
   mTextureManager->drawFrame("object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
-  mGameObject.draw(mRenderer);
-  mPlayer.draw(mRenderer);
+  for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
+    mGameObjectList[i]->draw(mRenderer);
+  }
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {
     std::cout << Constants::ApplicationName() << " Frame: " << mFrame << std::endl;
@@ -155,8 +163,9 @@ void Game::update(void) {
   mObjectY = centerY * (1.0 + 0.5 * sin((float)mFrame / Constants::FramesPerSecond()));
   mObjectAnimationFrame = mFrame * Constants::AnimationFrames() / Constants::FramesPerSecond() % Constants::AnimationFrames();
   mObjectRotation = mFrame;
-  mGameObject.update();
-  mPlayer.update();
+  for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
+    mGameObjectList[i]->update();
+  }
   mFrame++;
 }
 

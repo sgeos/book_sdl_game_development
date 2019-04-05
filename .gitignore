@@ -29,6 +29,9 @@
 # Temporary Files
 *.swp
 
+# MacOS
+.DS_Store
+
 # Executables
 *.exe
 *.out

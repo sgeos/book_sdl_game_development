@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include <vector>
+
 #include "GameObject.h"
 #include "Player.h"
 #include "TextureManager.h"
@@ -30,8 +32,7 @@ class Game {
     double mObjectScale, mObjectRotation;
     int mObjectAnimationFrame;
     TextureManager *mTextureManager;
-    GameObject mGameObject;
-    Player mPlayer;
+    std::vector<GameObject *> mGameObjectList;
 };
 
 #endif // GAME_H
