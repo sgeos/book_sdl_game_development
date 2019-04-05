@@ -4,6 +4,8 @@
 #include "Log.h"
 #include "TextureManager.h"
 
+TextureManager *TextureManager::sInstance = nullptr;
+
 bool TextureManager::load(std::string pFileName, std::string pId, SDL_Renderer *pRenderer) {
   SDL_Texture *texture = IMG_LoadTexture(pRenderer, pFileName.c_str());
   if (nullptr == texture) {

@@ -12,38 +12,6 @@
 #include "TextureManager.h"
 #include "Utility.h"
 
-// TTF reference functions from external tutorial.
-//
-//namespace {
-//  TTF_Font *openFont(const std::string &pFontFileName, int pFontSize) {
-//    TTF_Font *font = TTF_OpenFont(pFontFileName.c_str(), pFontSize);
-//    if (nullptr == font) {
-//      Log::SdlError(std::cout, "TTF_OpenFont");
-//      return nullptr;
-//    }
-//    return font;
-//  }
-//
-//  SDL_Texture *renderText(
-//    const std::string &pMessage,
-//    TTF_Font *pFont,
-//    SDL_Color pColor,
-//    SDL_Renderer *pRenderer
-//  ) {
-//    SDL_Surface *surface = TTF_RenderText_Blended(pFont, pMessage.c_str(), pColor);
-//    if (nullptr == surface) {
-//      Log::SdlError(std::cout, "TTF_RenderText");
-//      return nullptr;
-//    }
-//    SDL_Texture *texture = SDL_CreateTextureFromSurface(pRenderer, surface);
-//    if (nullptr == texture) {
-//      Log::SdlError(std::cout, "CreateTexture");
-//    }
-//    SDL_FreeSurface(surface);
-//    return texture;
-//  }
-//}
-
 Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
   reset();
   std::cout << Constants::ApplicationName() << " Game Start." << std::endl;
@@ -102,9 +70,10 @@ void Game::reset(void) {
     mDone = mError = true;
     return;
   }
+  mTextureManager = TextureManager::Instance();
   const std::string resourcePath = Constants::ResourcePath("");
-  mTextureManager.load(resourcePath + "animate.png", "object", mRenderer);
-  mTextureManager.load(resourcePath + "background.png", "background", mRenderer);
+  mTextureManager->load(resourcePath + "animate.png", "object", mRenderer);
+  mTextureManager->load(resourcePath + "background.png", "background", mRenderer);
   mFrame = 0;
   mDone = mError = false;
 }
@@ -113,22 +82,22 @@ void Game::render(void) {
   SDL_SetRenderDrawColor(mRenderer, mRed, mGreen, mBlue, mAlpha);
   SDL_RenderClear(mRenderer);
   int tileWidth, tileHeight;
-  mTextureManager.queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
+  mTextureManager->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
   int offsetX = cos((float)mFrame / (Constants::FramesPerSecond() * 3)) * tileHeight - tileHeight;
   int offsetY = (mFrame / 2) % tileWidth - tileWidth;
   for (int y = offsetY; y < Constants::WindowHeight(); y += tileHeight) {
     for (int x = offsetX; x < Constants::WindowWidth(); x += tileWidth) {
       SDL_RendererFlip flip = x / tileWidth % 2 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE | y / tileHeight % 2 ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-      mTextureManager.draw("background", x, y, tileWidth, tileHeight, mRenderer, 1.0, 0.0, flip);
+      mTextureManager->draw("background", x, y, tileWidth, tileHeight, mRenderer, 1.0, 0.0, flip);
     }
   }
   int objectWidth, objectHeight;
-  mTextureManager.queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
+  mTextureManager->queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
   objectWidth /= Constants::AnimationFrames();
   int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;
   int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
-  mTextureManager.drawFrame("object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer);
-  mTextureManager.drawFrame("object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
+  mTextureManager->drawFrame("object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer);
+  mTextureManager->drawFrame("object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {
     std::cout << Constants::ApplicationName() << " Frame: " << mFrame << std::endl;
@@ -173,7 +142,7 @@ void Game::update(void) {
       break;
   }
   int objectWidth, objectHeight;
-  mTextureManager.queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
+  mTextureManager->queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
   objectWidth /= Constants::AnimationFrames();
   mObjectScale = 1.0 + 0.5 * cos((float)mFrame / (Constants::FramesPerSecond() / 2));
   int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;

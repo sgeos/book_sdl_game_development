@@ -27,7 +27,7 @@ class Game {
     int mObjectX, mObjectY;
     double mObjectScale, mObjectRotation;
     int mObjectAnimationFrame;
-    TextureManager mTextureManager;
+    TextureManager *mTextureManager;
 };
 
 #endif // GAME_H
