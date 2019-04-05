@@ -3,13 +3,78 @@
 #include <cmath>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 
 #include "Constants.h"
 #include "Game.h"
 #include "Log.h"
 #include "Utility.h"
 
-Game::Game(void) : mWindow(nullptr), mRenderer(nullptr), mTexture(nullptr) {
+namespace {
+  void renderTexture(SDL_Texture *pTexture, SDL_Renderer *pRenderer, SDL_Rect pDestination, SDL_Rect *pClip = nullptr) {
+    SDL_RenderCopy(pRenderer, pTexture, pClip, &pDestination);
+  }
+
+  void renderTexture(
+    SDL_Texture *pTexture,
+    SDL_Renderer *pRenderer,
+    int pPositionX,
+    int pPositionY,
+    int pWidth,
+    int pHeight,
+    SDL_Rect *pClip = nullptr
+  ) {
+    SDL_Rect destination;
+    destination.x = pPositionX;
+    destination.y = pPositionY;
+    destination.w = pWidth;
+    destination.h = pHeight;
+    renderTexture(pTexture, pRenderer, destination, pClip);
+  }
+
+//  void renderTexture(SDL_Texture *pTexture, SDL_Renderer *pRenderer, int pPositionX, int pPositionY, SDL_Rect *pClip = nullptr) {
+//    SDL_Rect destination;
+//    destination.x = pPositionX;
+//    destination.y = pPositionY;
+//    if (nullptr == pClip) {
+//      SDL_QueryTexture(pTexture, nullptr, nullptr, &destination.w, &destination.h);
+//    } else {
+//      destination.w = pClip->w;
+//      destination.h = pClip->h;
+//    }
+//    renderTexture(pTexture, pRenderer, destination, pClip);
+//  }
+
+  TTF_Font *openFont(const std::string &pFontFileName, int pFontSize) {
+    TTF_Font *font = TTF_OpenFont(pFontFileName.c_str(), pFontSize);
+    if (nullptr == font) {
+      Log::SdlError(std::cout, "TTF_OpenFont");
+      return nullptr;
+    }
+    return font;
+  }
+
+  SDL_Texture *renderText(
+    const std::string &pMessage,
+    TTF_Font *pFont,
+    SDL_Color pColor,
+    SDL_Renderer *pRenderer
+  ) {
+    SDL_Surface *surface = TTF_RenderText_Blended(pFont, pMessage.c_str(), pColor);
+    if (nullptr == surface) {
+      Log::SdlError(std::cout, "TTF_RenderText");
+      return nullptr;
+    }
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(pRenderer, surface);
+    if (nullptr == texture) {
+      Log::SdlError(std::cout, "CreateTexture");
+    }
+    SDL_FreeSurface(surface);
+    return texture;
+  }
+}
+
+Game::Game(void) : mWindow(nullptr), mRenderer(nullptr), mTexture(nullptr), mBackground(nullptr) {
   reset();
   std::cout << Constants::ApplicationName() << " Game Start." << std::endl;
 }
@@ -20,7 +85,8 @@ Game::~Game(void) {
 }
 
 void Game::cleanup(void) {
-  Utility::cleanup(mTexture, mRenderer, mWindow);
+  Utility::cleanup(mBackground, mTexture, mRenderer, mWindow);
+  TTF_Quit();
   SDL_Quit();
 }
 
@@ -28,6 +94,11 @@ void Game::reset(void) {
   cleanup();
   if (0 != SDL_Init(SDL_INIT_VIDEO)) {
     Log::SdlError(std::cout, "SDL_Init");
+    mDone = mError = true;
+    return;
+  }
+  if (0 != TTF_Init()) {
+    Log::SdlError(std::cout, "TTF_Init");
     mDone = mError = true;
     return;
   }
@@ -75,6 +146,15 @@ void Game::reset(void) {
   mSourceRectangle.x = 0;
   mSourceRectangle.y = 0;
   SDL_QueryTexture(mTexture, nullptr, nullptr, &mSourceRectangle.w, &mSourceRectangle.h);
+  TTF_Font *font = openFont(resourcePath + "twinklebear_ascii.ttf", 32);
+  SDL_Color background_color = {0x00, 0x00, 0x00, 0x33};
+  mBackground = renderText("Background  ...  ", font, background_color, mRenderer);
+  TTF_CloseFont(font);
+  if (nullptr == mBackground) {
+    Utility::cleanup(mTexture, mRenderer, mWindow);
+    mDone = mError = true;
+    return;
+  }
   mFrame = 0;
   mDone = mError = false;
 }
@@ -82,6 +162,15 @@ void Game::reset(void) {
 void Game::render(void) {
   SDL_SetRenderDrawColor(mRenderer, mRed, mGreen, mBlue, mAlpha);
   SDL_RenderClear(mRenderer);
+  int tileWidth, tileHeight;
+  SDL_QueryTexture(mBackground, nullptr, nullptr, &tileWidth, &tileHeight);
+  int offsetX = cos((float)mFrame / (Constants::FramesPerSecond() * 3)) * tileHeight - tileHeight;
+  int offsetY = (mFrame / 2) % tileWidth - tileWidth;
+  for (int y = offsetY; y < Constants::WindowHeight(); y += tileHeight) {
+    for (int x = offsetX; x < Constants::WindowWidth(); x += tileWidth) {
+      renderTexture(mBackground, mRenderer, x, y, tileWidth, tileHeight);
+    }
+  }
   SDL_RenderCopy(mRenderer, mTexture, &mSourceRectangle, &mDestinationRectangle);
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {

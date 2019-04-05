@@ -1,7 +1,7 @@
 CXX = clang++
 SDL_HEADER = /opt/local/include
 SDL_LIB = /opt/local/lib
-SDL = -lSDL2 -L$(SDL_LIB)
+SDL = -lSDL2 -lSDL2_ttf -L$(SDL_LIB)
 CXXFLAGS = -Wall -c -std=c++14 -I$(SDL_HEADER)
 LDFLAGS = $(SDL)
 EXE = ../bin/Chapter2

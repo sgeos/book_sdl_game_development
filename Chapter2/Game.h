@@ -19,6 +19,7 @@ class Game {
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
     SDL_Texture *mTexture;
+    SDL_Texture *mBackground;
     SDL_Rect mSourceRectangle, mDestinationRectangle;
     int mFrame;
     bool mDone;
