@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
 #include "Constants.h"
@@ -11,6 +12,14 @@
 #include "Utility.h"
 
 namespace {
+  SDL_Texture *loadTexture(const std::string &pFileName, SDL_Renderer *pRenderer) {
+    SDL_Texture *texture = IMG_LoadTexture(pRenderer, pFileName.c_str());
+    if (nullptr == texture) {
+      Log::SdlError(std::cout, "LoadTexture");
+    }
+    return texture;
+  }
+
   void renderTexture(SDL_Texture *pTexture, SDL_Renderer *pRenderer, SDL_Rect pDestination, SDL_Rect *pClip = nullptr) {
     SDL_RenderCopy(pRenderer, pTexture, pClip, &pDestination);
   }
@@ -87,6 +96,7 @@ Game::~Game(void) {
 void Game::cleanup(void) {
   Utility::cleanup(mBackground, mTexture, mRenderer, mWindow);
   TTF_Quit();
+  IMG_Quit();
   SDL_Quit();
 }
 
@@ -94,6 +104,11 @@ void Game::reset(void) {
   cleanup();
   if (0 != SDL_Init(SDL_INIT_VIDEO)) {
     Log::SdlError(std::cout, "SDL_Init");
+    mDone = mError = true;
+    return;
+  }
+  if (IMG_INIT_PNG != (IMG_INIT_PNG & IMG_Init(IMG_INIT_PNG))) {
+    Log::SdlError(std::cout, "IMG_Init");
     mDone = mError = true;
     return;
   }
@@ -127,19 +142,10 @@ void Game::reset(void) {
     return;
   }
   const std::string resourcePath = Constants::ResourcePath("");
-  const std::string filename = resourcePath + "animate.bmp";
-  SDL_Surface *surface = SDL_LoadBMP(filename.c_str());
-  if (nullptr == surface) {
-    Log::SdlError(std::cout, "LoadBMP");
-    Utility::cleanup(mRenderer, mWindow);
-    mDone = mError = true;
-    return;
-  }
-  mTexture = SDL_CreateTextureFromSurface(mRenderer, surface);
-  SDL_FreeSurface(surface);
-  if (nullptr == mTexture) {
-    Log::SdlError(std::cout, "CreateTextureFromSurface");
-    Utility::cleanup(mRenderer, mWindow);
+  mTexture = loadTexture(resourcePath + "animate.png", mRenderer);
+  mBackground = loadTexture(resourcePath + "background.png", mRenderer);
+  if (nullptr == mBackground || nullptr == mTexture) {
+    Utility::cleanup(mBackground, mTexture, mRenderer, mWindow);
     mDone = mError = true;
     return;
   }
@@ -147,15 +153,6 @@ void Game::reset(void) {
   mSourceRectangle.y = 0;
   SDL_QueryTexture(mTexture, nullptr, nullptr, &mSourceRectangle.w, &mSourceRectangle.h);
   mSourceRectangle.w /= Constants::AnimationFrames();
-  TTF_Font *font = openFont(resourcePath + "twinklebear_ascii.ttf", 32);
-  SDL_Color background_color = {0x00, 0x00, 0x00, 0x33};
-  mBackground = renderText("Background  ...  ", font, background_color, mRenderer);
-  TTF_CloseFont(font);
-  if (nullptr == mBackground) {
-    Utility::cleanup(mTexture, mRenderer, mWindow);
-    mDone = mError = true;
-    return;
-  }
   mFrame = 0;
   mDone = mError = false;
 }
