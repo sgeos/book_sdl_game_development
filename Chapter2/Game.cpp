@@ -9,81 +9,42 @@
 #include "Constants.h"
 #include "Game.h"
 #include "Log.h"
+#include "TextureManager.h"
 #include "Utility.h"
 
-namespace {
-  SDL_Texture *loadTexture(const std::string &pFileName, SDL_Renderer *pRenderer) {
-    SDL_Texture *texture = IMG_LoadTexture(pRenderer, pFileName.c_str());
-    if (nullptr == texture) {
-      Log::SdlError(std::cout, "LoadTexture");
-    }
-    return texture;
-  }
-
-  void renderTexture(SDL_Texture *pTexture, SDL_Renderer *pRenderer, SDL_Rect pDestination, SDL_Rect *pClip = nullptr) {
-    SDL_RenderCopy(pRenderer, pTexture, pClip, &pDestination);
-  }
-
-  void renderTexture(
-    SDL_Texture *pTexture,
-    SDL_Renderer *pRenderer,
-    int pPositionX,
-    int pPositionY,
-    int pWidth,
-    int pHeight,
-    SDL_Rect *pClip = nullptr
-  ) {
-    SDL_Rect destination;
-    destination.x = pPositionX;
-    destination.y = pPositionY;
-    destination.w = pWidth;
-    destination.h = pHeight;
-    renderTexture(pTexture, pRenderer, destination, pClip);
-  }
-
-//  void renderTexture(SDL_Texture *pTexture, SDL_Renderer *pRenderer, int pPositionX, int pPositionY, SDL_Rect *pClip = nullptr) {
-//    SDL_Rect destination;
-//    destination.x = pPositionX;
-//    destination.y = pPositionY;
-//    if (nullptr == pClip) {
-//      SDL_QueryTexture(pTexture, nullptr, nullptr, &destination.w, &destination.h);
-//    } else {
-//      destination.w = pClip->w;
-//      destination.h = pClip->h;
+// TTF reference functions from external tutorial.
+//
+//namespace {
+//  TTF_Font *openFont(const std::string &pFontFileName, int pFontSize) {
+//    TTF_Font *font = TTF_OpenFont(pFontFileName.c_str(), pFontSize);
+//    if (nullptr == font) {
+//      Log::SdlError(std::cout, "TTF_OpenFont");
+//      return nullptr;
 //    }
-//    renderTexture(pTexture, pRenderer, destination, pClip);
+//    return font;
 //  }
+//
+//  SDL_Texture *renderText(
+//    const std::string &pMessage,
+//    TTF_Font *pFont,
+//    SDL_Color pColor,
+//    SDL_Renderer *pRenderer
+//  ) {
+//    SDL_Surface *surface = TTF_RenderText_Blended(pFont, pMessage.c_str(), pColor);
+//    if (nullptr == surface) {
+//      Log::SdlError(std::cout, "TTF_RenderText");
+//      return nullptr;
+//    }
+//    SDL_Texture *texture = SDL_CreateTextureFromSurface(pRenderer, surface);
+//    if (nullptr == texture) {
+//      Log::SdlError(std::cout, "CreateTexture");
+//    }
+//    SDL_FreeSurface(surface);
+//    return texture;
+//  }
+//}
 
-  TTF_Font *openFont(const std::string &pFontFileName, int pFontSize) {
-    TTF_Font *font = TTF_OpenFont(pFontFileName.c_str(), pFontSize);
-    if (nullptr == font) {
-      Log::SdlError(std::cout, "TTF_OpenFont");
-      return nullptr;
-    }
-    return font;
-  }
-
-  SDL_Texture *renderText(
-    const std::string &pMessage,
-    TTF_Font *pFont,
-    SDL_Color pColor,
-    SDL_Renderer *pRenderer
-  ) {
-    SDL_Surface *surface = TTF_RenderText_Blended(pFont, pMessage.c_str(), pColor);
-    if (nullptr == surface) {
-      Log::SdlError(std::cout, "TTF_RenderText");
-      return nullptr;
-    }
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(pRenderer, surface);
-    if (nullptr == texture) {
-      Log::SdlError(std::cout, "CreateTexture");
-    }
-    SDL_FreeSurface(surface);
-    return texture;
-  }
-}
-
-Game::Game(void) : mWindow(nullptr), mRenderer(nullptr), mTexture(nullptr), mBackground(nullptr) {
+Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
   reset();
   std::cout << Constants::ApplicationName() << " Game Start." << std::endl;
 }
@@ -94,7 +55,7 @@ Game::~Game(void) {
 }
 
 void Game::cleanup(void) {
-  Utility::cleanup(mBackground, mTexture, mRenderer, mWindow);
+  Utility::cleanup(mRenderer, mWindow);
   TTF_Quit();
   IMG_Quit();
   SDL_Quit();
@@ -142,17 +103,8 @@ void Game::reset(void) {
     return;
   }
   const std::string resourcePath = Constants::ResourcePath("");
-  mTexture = loadTexture(resourcePath + "animate.png", mRenderer);
-  mBackground = loadTexture(resourcePath + "background.png", mRenderer);
-  if (nullptr == mBackground || nullptr == mTexture) {
-    Utility::cleanup(mBackground, mTexture, mRenderer, mWindow);
-    mDone = mError = true;
-    return;
-  }
-  mSourceRectangle.x = 0;
-  mSourceRectangle.y = 0;
-  SDL_QueryTexture(mTexture, nullptr, nullptr, &mSourceRectangle.w, &mSourceRectangle.h);
-  mSourceRectangle.w /= Constants::AnimationFrames();
+  mTextureManager.load(resourcePath + "animate.png", "object", mRenderer);
+  mTextureManager.load(resourcePath + "background.png", "background", mRenderer);
   mFrame = 0;
   mDone = mError = false;
 }
@@ -161,15 +113,22 @@ void Game::render(void) {
   SDL_SetRenderDrawColor(mRenderer, mRed, mGreen, mBlue, mAlpha);
   SDL_RenderClear(mRenderer);
   int tileWidth, tileHeight;
-  SDL_QueryTexture(mBackground, nullptr, nullptr, &tileWidth, &tileHeight);
+  mTextureManager.queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
   int offsetX = cos((float)mFrame / (Constants::FramesPerSecond() * 3)) * tileHeight - tileHeight;
   int offsetY = (mFrame / 2) % tileWidth - tileWidth;
   for (int y = offsetY; y < Constants::WindowHeight(); y += tileHeight) {
     for (int x = offsetX; x < Constants::WindowWidth(); x += tileWidth) {
-      renderTexture(mBackground, mRenderer, x, y, tileWidth, tileHeight);
+      SDL_RendererFlip flip = x / tileWidth % 2 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE | y / tileHeight % 2 ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+      mTextureManager.draw("background", x, y, tileWidth, tileHeight, mRenderer, 1.0, 0.0, flip);
     }
   }
-  SDL_RenderCopyEx(mRenderer, mTexture, &mSourceRectangle, &mDestinationRectangle, mFrame, nullptr, SDL_FLIP_HORIZONTAL);
+  int objectWidth, objectHeight;
+  mTextureManager.queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
+  objectWidth /= Constants::AnimationFrames();
+  int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;
+  int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
+  mTextureManager.drawFrame("object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer);
+  mTextureManager.drawFrame("object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {
     std::cout << Constants::ApplicationName() << " Frame: " << mFrame << std::endl;
@@ -213,16 +172,16 @@ void Game::update(void) {
       mBlue = 255;
       break;
   }
-  int imageWidth = mSourceRectangle.w * (1.0 + 0.5 * cos((float)mFrame / (Constants::FramesPerSecond() / 2)));
-  int imageHeight = mSourceRectangle.h * (1.0 + 0.5 * sin((float)mFrame / (Constants::FramesPerSecond() / 2)));
-  int centerX = (Constants::WindowWidth() - imageWidth) / 2;
-  int centerY = (Constants::WindowHeight() - imageHeight) / 2;
-  mDestinationRectangle.x = centerX * (1.0 + 0.5 * cos((float)mFrame / (2 * Constants::FramesPerSecond())));
-  mDestinationRectangle.y = centerY * (1.0 + 0.5 * sin((float)mFrame / Constants::FramesPerSecond()));
-  mDestinationRectangle.w = imageWidth;
-  mDestinationRectangle.h = imageHeight;
-  int animationIndex = mFrame * Constants::AnimationFrames() / Constants::FramesPerSecond() % Constants::AnimationFrames();
-  mSourceRectangle.x = mSourceRectangle.w * animationIndex;
+  int objectWidth, objectHeight;
+  mTextureManager.queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
+  objectWidth /= Constants::AnimationFrames();
+  mObjectScale = 1.0 + 0.5 * cos((float)mFrame / (Constants::FramesPerSecond() / 2));
+  int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;
+  int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
+  mObjectX = centerX * (1.0 + 0.5 * cos((float)mFrame / (2 * Constants::FramesPerSecond())));
+  mObjectY = centerY * (1.0 + 0.5 * sin((float)mFrame / Constants::FramesPerSecond()));
+  mObjectAnimationFrame = mFrame * Constants::AnimationFrames() / Constants::FramesPerSecond() % Constants::AnimationFrames();
+  mObjectRotation = mFrame;
   mFrame++;
 }
 

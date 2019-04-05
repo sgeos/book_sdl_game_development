@@ -1,6 +1,8 @@
 #ifndef GAME_H
 #define GAME_H
 
+#include "TextureManager.h"
+
 class Game {
   public:
     Game(void);
@@ -18,13 +20,14 @@ class Game {
   private:
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
-    SDL_Texture *mTexture;
-    SDL_Texture *mBackground;
-    SDL_Rect mSourceRectangle, mDestinationRectangle;
     int mFrame;
     bool mDone;
     bool mError;
     int mRed, mGreen, mBlue, mAlpha;
+    int mObjectX, mObjectY;
+    double mObjectScale, mObjectRotation;
+    int mObjectAnimationFrame;
+    TextureManager mTextureManager;
 };
 
 #endif // GAME_H
