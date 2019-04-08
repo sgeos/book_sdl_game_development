@@ -31,15 +31,15 @@ class Game {
     static Game *sInstance;
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
+    std::vector<GameObject *> mGameObjectList;
     int mFrame;
     bool mDone;
     bool mError;
-    int mRed, mGreen, mBlue, mAlpha;
+
     int mObjectX, mObjectY;
     double mObjectScale, mObjectRotation;
     int mObjectAnimationFrame;
     TextureManager *mTextureManager;
-    std::vector<GameObject *> mGameObjectList;
 
     Game(void);
 };

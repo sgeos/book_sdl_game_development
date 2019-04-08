@@ -8,10 +8,10 @@ class LoaderParams {
   public:
     LoaderParams(
       std::string pTextureId,
-      int pX,
-      int pY,
-      int pWidth,
-      int pHeight,
+      int pX = 0,
+      int pY = 0,
+      int pWidth = 0,
+      int pHeight = 0,
       double pScale = 1.0,
       double pRotation = 0.0,
       SDL_RendererFlip pFlip = SDL_FLIP_NONE,

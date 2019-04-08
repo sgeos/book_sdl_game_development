@@ -7,6 +7,7 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "Constants.h"
+#include "DemoBackground.h"
 #include "Enemy.h"
 #include "Game.h"
 #include "Log.h"
@@ -78,6 +79,10 @@ void Game::reset(void) {
   mTextureManager->load(mRenderer, "object", resourcePath + "animate.png");
   mTextureManager->load(mRenderer, "background", resourcePath + "background.png");
 
+  int tileWidth, tileHeight;
+  mTextureManager->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
+  mGameObjectList.push_back(new DemoBackground(new LoaderParams("object", 0, 0, tileWidth, tileHeight)));
+  mGameObjectList.push_back(new DemoBackground(new LoaderParams("background", 0, 0, tileWidth, tileHeight)));
   mGameObjectList.push_back(new Player(new LoaderParams("object", 0, 0, 128, 82)));
   for (int i = 0; i < 3; i++) {
     int position = (i + 1) * 100;
@@ -88,21 +93,7 @@ void Game::reset(void) {
 }
 
 void Game::render(void) {
-  SDL_SetRenderDrawColor(mRenderer, mRed, mGreen, mBlue, mAlpha);
   SDL_RenderClear(mRenderer);
-  int tileWidth, tileHeight;
-  mTextureManager->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
-  int xOffset = cos((float)mFrame / (Constants::FramesPerSecond() * 3)) * tileWidth;
-  int yOffset = mFrame / 2;
-  for (int y = yOffset % tileHeight - tileHeight; y < Constants::WindowHeight(); y += tileHeight) {
-    for (int x = xOffset % tileWidth - tileWidth; x < Constants::WindowWidth(); x += tileWidth) {
-      int xIndex = (int)((x - xOffset) / tileWidth);
-      int yIndex = (int)((y - yOffset) / tileHeight);
-      SDL_RendererFlip xFlip = (0 != (xIndex % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-      SDL_RendererFlip yFlip = (0 != (yIndex % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-      mTextureManager->draw(mRenderer, "background", x, y, tileWidth, tileHeight, 1.0, 0.0, (SDL_RendererFlip)(xFlip | yFlip));
-    }
-  }
   int objectWidth, objectHeight;
   mTextureManager->queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
   objectWidth /= Constants::AnimationFrames();
@@ -120,42 +111,6 @@ void Game::render(void) {
 }
 
 void Game::update(void) {
-  int framesPerCycle = 2.5 * Constants::FramesPerSecond();
-  int hue = mFrame / framesPerCycle % 6;
-  int intensity = 255 * abs(cos((float)mFrame / (2 * framesPerCycle) * M_PI));
-  mAlpha = 255;
-  switch (hue) {
-    case 0:
-      mRed =  255;
-      mGreen = 0;
-      mBlue = intensity;
-      break;
-    case 1:
-      mRed = 255;
-      mGreen = intensity;
-      mBlue = 0;
-      break;
-    case 2:
-      mRed = intensity;
-      mGreen = 255;
-      mBlue = 0;
-      break;
-    case 3:
-      mRed = 0;
-      mGreen = 255;
-      mBlue = intensity;
-      break;
-    case 4:
-      mRed = 0;
-      mGreen = intensity;
-      mBlue = 255;
-      break;
-    case 5:
-      mRed = intensity;
-      mGreen = 0;
-      mBlue = 255;
-      break;
-  }
   int objectWidth, objectHeight;
   mTextureManager->queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
   objectWidth /= Constants::AnimationFrames();
