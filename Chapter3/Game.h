@@ -36,11 +36,6 @@ class Game {
     bool mDone;
     bool mError;
 
-    int mObjectX, mObjectY;
-    double mObjectScale, mObjectRotation;
-    int mObjectAnimationFrame;
-    TextureManager *mTextureManager;
-
     Game(void);
 };
 

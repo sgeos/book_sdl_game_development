@@ -1,12 +1,12 @@
-#ifndef PLAYER_H
-#define PLAYER_H
+#ifndef DEMO_GAME_OBJECT_H
+#define DEMO_GAME_OBJECT_H
 
 #include "SdlGameObject.h"
 #include "LoaderParams.h"
 
-class Player : public SdlGameObject {
+class DemoGameObject : public SdlGameObject {
   public:
-    Player(const LoaderParams *pParams);
+    DemoGameObject(const LoaderParams *pParams);
     void draw(void);
     void update(void);
     void cleanup(void);
@@ -16,5 +16,5 @@ class Player : public SdlGameObject {
     int mCenterX, mCenterY;
 };
 
-#endif // PLAYER_H
+#endif // DEMO_GAME_OBJECT_H
 

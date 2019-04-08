@@ -8,6 +8,7 @@
 
 #include "Constants.h"
 #include "DemoBackground.h"
+#include "DemoGameObject.h"
 #include "Enemy.h"
 #include "Game.h"
 #include "Log.h"
@@ -74,33 +75,36 @@ void Game::reset(void) {
     mDone = mError = true;
     return;
   }
-  mTextureManager = TextureManager::Instance();
   const std::string resourcePath = Constants::ResourcePath("");
-  mTextureManager->load(mRenderer, "object", resourcePath + "animate.png");
-  mTextureManager->load(mRenderer, "background", resourcePath + "background.png");
+  TextureManager::Instance()->load(mRenderer, "object", resourcePath + "animate.png");
+  TextureManager::Instance()->load(mRenderer, "background", resourcePath + "background.png");
 
+  int w = 128;
+  int h = 82;
+  for (int j = 0; j < 5; j++) {
+    for (int i = 0; i < 5; i++) {
+      int x = i * Constants::WindowWidth() / 4 - w/2;
+      int y = j * Constants::WindowHeight() / 4 - h/2;
+      SDL_RendererFlip xFlip = (0 != (i % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+      SDL_RendererFlip yFlip = (0 != (j % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+      SDL_RendererFlip flip = (SDL_RendererFlip)(xFlip | yFlip);
+      mGameObjectList.push_back(new Enemy(new LoaderParams("object", x, y, w, h, 1.0, 0.0, flip)));
+    }
+  }
   int tileWidth, tileHeight;
-  mTextureManager->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
+  TextureManager::Instance()->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
   mGameObjectList.push_back(new DemoBackground(new LoaderParams("object", 0, 0, tileWidth, tileHeight)));
   mGameObjectList.push_back(new DemoBackground(new LoaderParams("background", 0, 0, tileWidth, tileHeight)));
-  mGameObjectList.push_back(new Player(new LoaderParams("object", 0, 0, 128, 82)));
-  for (int i = 0; i < 3; i++) {
-    int position = (i + 1) * 100;
-    mGameObjectList.push_back(new Enemy(new LoaderParams("object", position, position, 128, 82)));
-  }
+  int x = Constants::WindowWidth() / 2;
+  int y = Constants::WindowHeight() / 2;
+  mGameObjectList.push_back(new Player(new LoaderParams("object", x, y, w, h)));
+  mGameObjectList.push_back(new DemoGameObject(new LoaderParams("object", x, y, w, h)));
   mFrame = 0;
   mDone = mError = false;
 }
 
 void Game::render(void) {
   SDL_RenderClear(mRenderer);
-  int objectWidth, objectHeight;
-  mTextureManager->queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
-  objectWidth /= Constants::AnimationFrames();
-  int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;
-  int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
-  mTextureManager->drawFrame(mRenderer, "object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame);
-  mTextureManager->drawFrame(mRenderer, "object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->draw();
   }
@@ -111,16 +115,6 @@ void Game::render(void) {
 }
 
 void Game::update(void) {
-  int objectWidth, objectHeight;
-  mTextureManager->queryTexture("object", nullptr, nullptr, &objectWidth, &objectHeight);
-  objectWidth /= Constants::AnimationFrames();
-  mObjectScale = 1.0 + 0.5 * cos((float)mFrame / (Constants::FramesPerSecond() / 2));
-  int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;
-  int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
-  mObjectX = centerX * (1.0 + 0.5 * cos((float)mFrame / (2 * Constants::FramesPerSecond())));
-  mObjectY = centerY * (1.0 + 0.5 * sin((float)mFrame / Constants::FramesPerSecond()));
-  mObjectAnimationFrame = mFrame * Constants::AnimationFrames() / Constants::FramesPerSecond() % Constants::AnimationFrames();
-  mObjectRotation = mFrame;
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->update();
   }
