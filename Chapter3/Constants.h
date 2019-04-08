@@ -4,9 +4,9 @@
 #include <string>
 
 namespace Constants {
-  extern char const * const ApplicationName(void);
+  extern const char * const ApplicationName(void);
   extern std::string ResourcePath(const std::string &subDir);
-  extern char const * const WindowTitle(void);
+  extern const char * const WindowTitle(void);
   extern int WindowPositionX(void);
   extern int WindowPositionY(void);
   extern int WindowWidth(void);

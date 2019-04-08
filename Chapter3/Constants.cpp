@@ -5,14 +5,16 @@
 #include <SDL2/SDL.h>
 
 namespace Constants {
-  char const * const ApplicationName(void) {
+  const char * const ApplicationName(void) {
     static const char result[] = "Chapter3";
     return result;
   }
-  char const * const WindowTitle(void) {
+
+  const char * const WindowTitle(void) {
     static const char result[] = "Chapter 3 - Working with Game Objects!";
     return result;
   }
+
   std::string ResourcePath(const std::string &directory = "") {
     #ifdef _WIN32
       const char PATH_SEP = '\\';
@@ -35,27 +37,35 @@ namespace Constants {
     }
     return directory.empty() ? basePath : basePath + directory + PATH_SEP;
   }
+
   int WindowPositionX(void) {
     return SDL_WINDOWPOS_CENTERED;
   }
+
   int WindowPositionY(void) {
     return SDL_WINDOWPOS_CENTERED;
   }
+
   int WindowWidth(void) {
     return 640;
   }
+
   int WindowHeight(void) {
     return 480;
   }
+
   int DefaultRendererWindow(void) {
     return -1;
   }
+
   int FramesPerSecond(void) {
     return 60;
   }
+
   int FrameWait(void) {
     return 1000 / FramesPerSecond();
   }
+
   int AnimationFrames(void) {
     return 6;
   }

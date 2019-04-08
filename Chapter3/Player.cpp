@@ -3,19 +3,18 @@
 
 #include "Player.h"
 #include "Constants.h"
+#include "SdlGameObject.h"
 
-void Player::load(int pX, int pY, int pWidth, int pHeight, std::string pTextureId) {
-  GameObject::load(pX, pY, pWidth, pHeight, pTextureId);
+Player::Player(const LoaderParams *pParams) : SdlGameObject(pParams) { }
+
+void Player::draw(void) {
+  SdlGameObject::draw();
 }
 
-void Player::draw(SDL_Renderer *pRenderer) {
-  GameObject::draw(pRenderer);
-}
-
-void Player::update() {
-  GameObject::update();
+void Player::update(void) {
+  SdlGameObject::update();
   mScale = 1.0 + cos((float)mAnimationCounter / Constants::FramesPerSecond());
 }
 
-void Player::cleanup() {}
+void Player::cleanup(void) { }
 

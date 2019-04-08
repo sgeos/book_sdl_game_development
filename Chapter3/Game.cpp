@@ -7,10 +7,13 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "Constants.h"
+#include "Enemy.h"
 #include "Game.h"
 #include "Log.h"
 #include "TextureManager.h"
 #include "Utility.h"
+
+Game *Game::sInstance = nullptr;
 
 Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
   reset();
@@ -72,16 +75,13 @@ void Game::reset(void) {
   }
   mTextureManager = TextureManager::Instance();
   const std::string resourcePath = Constants::ResourcePath("");
-  mTextureManager->load(resourcePath + "animate.png", "object", mRenderer);
-  mTextureManager->load(resourcePath + "background.png", "background", mRenderer);
+  mTextureManager->load(mRenderer, "object", resourcePath + "animate.png");
+  mTextureManager->load(mRenderer, "background", resourcePath + "background.png");
 
-  mGameObjectList.push_back(new Player());
+  mGameObjectList.push_back(new Player(new LoaderParams("object", 0, 0, 128, 82)));
   for (int i = 0; i < 3; i++) {
-    mGameObjectList.push_back(new GameObject());
-  }
-  for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
-    int position = i * 100;
-    mGameObjectList[i]->load(position, position, 128, 82, "object");
+    int position = (i + 1) * 100;
+    mGameObjectList.push_back(new Enemy(new LoaderParams("object", position, position, 128, 82)));
   }
   mFrame = 0;
   mDone = mError = false;
@@ -97,7 +97,7 @@ void Game::render(void) {
   for (int y = offsetY; y < Constants::WindowHeight(); y += tileHeight) {
     for (int x = offsetX; x < Constants::WindowWidth(); x += tileWidth) {
       SDL_RendererFlip flip = x / tileWidth % 2 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE | y / tileHeight % 2 ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-      mTextureManager->draw("background", x, y, tileWidth, tileHeight, mRenderer, 1.0, 0.0, flip);
+      mTextureManager->draw(mRenderer, "background", x, y, tileWidth, tileHeight, 1.0, 0.0, flip);
     }
   }
   int objectWidth, objectHeight;
@@ -105,10 +105,10 @@ void Game::render(void) {
   objectWidth /= Constants::AnimationFrames();
   int centerX = (Constants::WindowWidth() - objectWidth * mObjectScale) / 2;
   int centerY = (Constants::WindowHeight() - objectHeight * mObjectScale) / 2;
-  mTextureManager->drawFrame("object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer);
-  mTextureManager->drawFrame("object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mRenderer, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
+  mTextureManager->drawFrame(mRenderer, "object", centerX, centerY, objectWidth, objectHeight, 0, mObjectAnimationFrame);
+  mTextureManager->drawFrame(mRenderer, "object", mObjectX, mObjectY, objectWidth, objectHeight, 0, mObjectAnimationFrame, mObjectScale, mObjectRotation, SDL_FLIP_HORIZONTAL);
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
-    mGameObjectList[i]->draw(mRenderer);
+    mGameObjectList[i]->draw();
   }
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {
@@ -193,6 +193,10 @@ void Game::tick(void) {
 
 int Game::getFrame(void) {
   return mFrame;
+}
+
+SDL_Renderer *Game::getRenderer(void) {
+  return mRenderer;
 }
 
 bool Game::isDone(void) {

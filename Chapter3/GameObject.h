@@ -1,22 +1,18 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include <SDL2/SDL.h>
-#include <string>
+#include "LoaderParams.h"
 
 class GameObject {
   public:
-    virtual void load(int pX, int pY, int pWidth, int pHeight, std::string pTextureId);
-    virtual void draw(SDL_Renderer *pRenderer);
-    virtual void update();
-    virtual void cleanup();
+    GameObject(void) { }
+    virtual void draw() = 0;
+    virtual void update() = 0;
+    virtual void cleanup() = 0;
 
   protected:
-    std::string mTextureId;
-    int mAnimationCounter, mAnimationFrame, mAnimationRow;
-    int mX, mY, mWidth, mHeight;
-    double mScale, mRotation;
-    SDL_RendererFlip mFlip;
+    GameObject(const LoaderParams *pParams) {}
+    virtual ~GameObject() {}
 };
 
 #endif // GAME_OBJECT_H

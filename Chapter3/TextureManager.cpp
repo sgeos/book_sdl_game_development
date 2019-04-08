@@ -6,7 +6,7 @@
 
 TextureManager *TextureManager::sInstance = nullptr;
 
-bool TextureManager::load(std::string pFileName, std::string pId, SDL_Renderer *pRenderer) {
+bool TextureManager::load(SDL_Renderer *pRenderer, std::string pId, std::string pFileName) {
   SDL_Texture *texture = IMG_LoadTexture(pRenderer, pFileName.c_str());
   if (nullptr == texture) {
     Log::SdlError(std::cout, "LoadTexture");
@@ -18,20 +18,21 @@ bool TextureManager::load(std::string pFileName, std::string pId, SDL_Renderer *
 }
 
 void TextureManager::draw(
+  SDL_Renderer *pRenderer,
   std::string pId,
   int pPositionX,
   int pPositionY,
   int pWidth,
   int pHeight,
-  SDL_Renderer *pRenderer,
   double pScale,
   double pRotation,
   SDL_RendererFlip pFlip
 ) {
-  drawFrame(pId, pPositionX, pPositionY, pWidth, pHeight, 0, 0, pRenderer, pScale, pRotation, pFlip);
+  drawFrame(pRenderer, pId, pPositionX, pPositionY, pWidth, pHeight, 0, 0, pScale, pRotation, pFlip);
 }
 
 void TextureManager::drawFrame(
+  SDL_Renderer *pRenderer,
   std::string pId,
   int pPositionX,
   int pPositionY,
@@ -39,7 +40,6 @@ void TextureManager::drawFrame(
   int pHeight,
   int pRow,
   int pFrame,
-  SDL_Renderer *pRenderer,
   double pScale,
   double pRotation,
   SDL_RendererFlip pFlip

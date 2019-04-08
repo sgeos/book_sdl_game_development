@@ -6,25 +6,26 @@
 
 class TextureManager {
   public:
-    static TextureManager *Instance() {
+    static TextureManager *Instance(void) {
       if (nullptr == sInstance) {
         sInstance = new TextureManager();
       }
       return sInstance;
     }
-    bool load(std::string pFileName, std::string pId, SDL_Renderer *pRenderer);
+    bool load(SDL_Renderer *pRenderer, std::string pId, std::string pFileName);
     void draw(
+      SDL_Renderer *pRenderer,
       std::string pId,
       int pPositionX,
       int pPositionY,
       int pWidth,
       int pHeight,
-      SDL_Renderer *pRenderer,
       double pScale = 1.0,
       double pRotation = 0.0,
       SDL_RendererFlip pFlip = SDL_FLIP_NONE
     );
     void drawFrame(
+      SDL_Renderer *pRenderer,
       std::string pId,
       int pPositionX,
       int pPositionY,
@@ -32,7 +33,6 @@ class TextureManager {
       int pHeight,
       int pRow,
       int pFrame,
-      SDL_Renderer *pRenderer,
       double pScale = 1.0,
       double pRotation = 0.0,
       SDL_RendererFlip pFlip = SDL_FLIP_NONE

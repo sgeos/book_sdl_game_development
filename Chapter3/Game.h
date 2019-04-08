@@ -9,7 +9,12 @@
 
 class Game {
   public:
-    Game(void);
+    static Game *Instance(void) {
+      if (nullptr == sInstance) {
+        sInstance = new Game();
+      }
+      return sInstance;
+    }
     ~Game(void);
     void cleanup(void);
     void reset(void);
@@ -18,10 +23,12 @@ class Game {
     void handleEvents(void);
     void tick(void);
     int getFrame(void);
+    SDL_Renderer *getRenderer(void);
     bool isDone(void);
     bool isError(void);
 
   private:
+    static Game *sInstance;
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
     int mFrame;
@@ -33,6 +40,8 @@ class Game {
     int mObjectAnimationFrame;
     TextureManager *mTextureManager;
     std::vector<GameObject *> mGameObjectList;
+
+    Game(void);
 };
 
 #endif // GAME_H

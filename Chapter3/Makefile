@@ -9,7 +9,7 @@ EXE = ../bin/Chapter3
 .PHONY: all
 all: $(EXE)
 
-$(EXE): main.o Constants.o Game.o GameObject.o Log.o Player.o TextureManager.o
+$(EXE): main.o Constants.o Enemy.o Game.o LoaderParams.o Log.o Player.o SdlGameObject.o TextureManager.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 .o: .cpp
