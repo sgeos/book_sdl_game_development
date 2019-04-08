@@ -92,12 +92,15 @@ void Game::render(void) {
   SDL_RenderClear(mRenderer);
   int tileWidth, tileHeight;
   mTextureManager->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
-  int offsetX = cos((float)mFrame / (Constants::FramesPerSecond() * 3)) * tileHeight - tileHeight;
-  int offsetY = (mFrame / 2) % tileWidth - tileWidth;
-  for (int y = offsetY; y < Constants::WindowHeight(); y += tileHeight) {
-    for (int x = offsetX; x < Constants::WindowWidth(); x += tileWidth) {
-      SDL_RendererFlip flip = x / tileWidth % 2 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE | y / tileHeight % 2 ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-      mTextureManager->draw(mRenderer, "background", x, y, tileWidth, tileHeight, 1.0, 0.0, flip);
+  int xOffset = cos((float)mFrame / (Constants::FramesPerSecond() * 3)) * tileWidth;
+  int yOffset = mFrame / 2;
+  for (int y = yOffset % tileHeight - tileHeight; y < Constants::WindowHeight(); y += tileHeight) {
+    for (int x = xOffset % tileWidth - tileWidth; x < Constants::WindowWidth(); x += tileWidth) {
+      int xIndex = (int)((x - xOffset) / tileWidth);
+      int yIndex = (int)((y - yOffset) / tileHeight);
+      SDL_RendererFlip xFlip = (0 != (xIndex % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+      SDL_RendererFlip yFlip = (0 != (yIndex % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
+      mTextureManager->draw(mRenderer, "background", x, y, tileWidth, tileHeight, 1.0, 0.0, (SDL_RendererFlip)(xFlip | yFlip));
     }
   }
   int objectWidth, objectHeight;
