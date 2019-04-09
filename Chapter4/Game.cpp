@@ -11,6 +11,7 @@
 #include "DemoGameObject.h"
 #include "Enemy.h"
 #include "Game.h"
+#include "InputHandler.h"
 #include "Log.h"
 #include "TextureManager.h"
 #include "Utility.h"
@@ -28,7 +29,12 @@ Game::~Game(void) {
 }
 
 void Game::cleanup(void) {
+  while (false == mGameObjectList.empty()) {
+    delete mGameObjectList.back();
+    mGameObjectList.pop_back();
+  }
   Utility::cleanup(mRenderer, mWindow);
+  InputHandler::Instance()->reset();
   TTF_Quit();
   IMG_Quit();
   SDL_Quit();
@@ -126,18 +132,7 @@ void Game::update(void) {
 }
 
 void Game::handleEvents(void) {
-  SDL_Event event;
-  while (SDL_PollEvent(&event)) {
-    switch (event.type) {
-      case SDL_QUIT:
-      case SDL_MOUSEBUTTONDOWN:
-      case SDL_KEYDOWN:
-        mDone = true;
-        break;
-      default:
-        break;
-    }
-  }
+  InputHandler::Instance()->update();
 }
 
 void Game::tick(void) {
@@ -157,6 +152,10 @@ int Game::getFrame(void) {
 
 SDL_Renderer *Game::getRenderer(void) {
   return mRenderer;
+}
+
+void Game::quit(void) {
+  mDone = true;
 }
 
 bool Game::isDone(void) {
