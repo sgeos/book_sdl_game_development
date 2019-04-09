@@ -16,6 +16,7 @@ class SdlGameObject : public GameObject {
     std::string mTextureId;
     Vector2D mPosition;
     Vector2D mVelocity;
+    Vector2D mAcceleration;
     int mWidth, mHeight;
     double mScale, mRotation;
     SDL_RendererFlip mFlip;

@@ -10,7 +10,8 @@
 SdlGameObject::SdlGameObject(const LoaderParams *pParams) :
   GameObject(pParams),
   mPosition(pParams->getX(), pParams->getY()),
-  mVelocity(0.0, 0.0)
+  mVelocity(0.0, 0.0),
+  mAcceleration(0.0, 0.0)
 {
   mTextureId = pParams->getTextureId();
   mWidth = pParams->getWidth();
@@ -35,6 +36,7 @@ void SdlGameObject::draw(void) {
 
 void SdlGameObject::update(void) {
   mAnimationCounter++;
+  mVelocity += mAcceleration;
   mPosition += mVelocity;
 }
 

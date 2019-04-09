@@ -141,10 +141,14 @@ void Game::handleEvents(void) {
 }
 
 void Game::tick(void) {
+  Uint32 frameStart = SDL_GetTicks();
   handleEvents();
   update();
   render();
-  SDL_Delay(Constants::FrameWait());
+  int frameWait = (int)(Constants::FrameWait() + frameStart - SDL_GetTicks());
+  if (0 < frameWait) {
+    SDL_Delay(frameWait);
+  }
 }
 
 int Game::getFrame(void) {
