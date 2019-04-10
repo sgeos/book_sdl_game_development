@@ -6,7 +6,15 @@
 
 InputHandler *InputHandler::sInstance;
 
-InputHandler::InputHandler(void) { }
+InputHandler::InputHandler(void) : mMousePosition(0.0, 0.0) {
+  for (int i = 0; i < 3; i++) {
+    mMouseButtonList.push_back(false);
+  }
+}
+
+InputHandler::~InputHandler(void) {
+  reset();
+}
 
 void InputHandler::reset(void) {
   while (false == mJoystickList.empty()) {
@@ -21,48 +29,91 @@ void InputHandler::reset(void) {
   mInitialized = false;
 }
 
+void InputHandler::onJoystickAxisMotionEvent(int pDeviceId, int pAxisId, int pAxisValue) {
+  int result;
+  if (mJoystickDeadZone < pAxisValue) {
+    result = 1;
+  } else if (pAxisValue < -mJoystickDeadZone) {
+    result = -1;
+  } else /* -mJoystickDeadZone <= pAxisValue <= mJoystickDeadZone */ {
+    result = 0;
+  }
+  switch (pAxisId % 4) {
+    default:
+    case 0:
+      mJoystickAxisList[pDeviceId].first->setX(result);
+      break;
+    case 1:
+      mJoystickAxisList[pDeviceId].first->setY(result);
+      break;
+    case 2:
+      mJoystickAxisList[pDeviceId].second->setX(result);
+      break;
+    case 3:
+      mJoystickAxisList[pDeviceId].second->setY(result);
+      break;
+  }
+  // std::cout << "Joy Axis Motion: Device " << pDeviceId << ", Axis " << pAxisId;
+  // std::cout << ", Value: " << pAxisValue << ", Result: " << result << std::endl;
+}
+
+void InputHandler::onJoystickButtonEvent(int pDeviceId, int pButtonId, int pIsDown) {
+  mJoystickButtonList[pDeviceId][pButtonId] = pIsDown;
+}
+
+void InputHandler::onMouseMotionEvent(int pX, int pY) {
+  mMousePosition.setX(pX);
+  mMousePosition.setY(pY);
+}
+
+void InputHandler::onMouseButtonEvent(int pSdlButtonId, bool pIsDown) {
+  int buttonId;
+  switch (pSdlButtonId) {
+    default:
+    case SDL_BUTTON_LEFT:
+      buttonId = LEFT;
+      break;
+    case SDL_BUTTON_MIDDLE:
+      buttonId = MIDDLE;
+      break;
+    case SDL_BUTTON_RIGHT:
+      buttonId = RIGHT;
+      break;
+  }
+  mMouseButtonList[buttonId] = pIsDown;
+}
+
+void InputHandler::onKeyEvent(void) {
+  mKeyState = SDL_GetKeyboardState(nullptr);
+  if (isKeyDown(SDL_SCANCODE_ESCAPE)) {
+    Game::Instance()->quit();
+  }
+}
+
 void InputHandler::update(void) {
   SDL_Event event;
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_QUIT:
-      case SDL_MOUSEBUTTONDOWN:
-      case SDL_KEYDOWN:
         Game::Instance()->quit();
         break;
       case SDL_JOYAXISMOTION:
-      {
-        int result;
-        if (mJoystickDeadZone < event.jaxis.value) {
-          result = 1;
-        } else if (event.jaxis.value < -mJoystickDeadZone) {
-          result = -1;
-        } else /* -deadZone <= value <= deadZone */ {
-          result = 0;
-        }
-        int deviceId = event.jaxis.which;
-        int axisId = event.jaxis.axis;
-        switch (axisId % 4) {
-          default:
-          case 0:
-            mJoystickAxisList[deviceId].first->setX(result);
-            break;
-          case 1:
-            mJoystickAxisList[deviceId].first->setY(result);
-            break;
-          case 2:
-            mJoystickAxisList[deviceId].second->setX(result);
-            break;
-          case 3:
-            mJoystickAxisList[deviceId].second->setY(result);
-            break;
-        }
-        // std::cout << "Joy Axis Motion: Device " << deviceId << ", Axis " << axisId;
-        // std::cout << ", Value: " << event.jaxis.value << ", Result: " << result << std::endl;
+        onJoystickAxisMotionEvent(event.jaxis.which, event.jaxis.axis, event.jaxis.value);
         break;
-      }
       case SDL_JOYBUTTONDOWN:
-        Game::Instance()->quit();
+      case SDL_JOYBUTTONUP:
+        onJoystickButtonEvent(event.jaxis.which, event.jbutton.button, SDL_JOYBUTTONDOWN == event.type);
+        break;
+      case SDL_MOUSEMOTION:
+        onMouseMotionEvent(event.motion.x, event.motion.y);
+        break;
+      case SDL_MOUSEBUTTONUP:
+      case SDL_MOUSEBUTTONDOWN:
+        onMouseButtonEvent(event.button.button, SDL_MOUSEBUTTONDOWN == event.type);
+        break;
+      case SDL_KEYUP:
+      case SDL_KEYDOWN:
+        onKeyEvent();
         break;
       default:
         break;
@@ -84,7 +135,14 @@ void InputHandler::initialiseJoysticks(void) {
     if (joystick) {
       mJoystickList.push_back(joystick);
       mJoystickAxisList.push_back(std::make_pair(new Vector2D(0.0, 0.0), new Vector2D(0.0, 0.0)));
-      std::cout << "Initialized joystick " << i << " \"" << SDL_JoystickName(mJoystickList[i]) << "\"." << std::endl;
+      std::vector<bool> buttonSet;
+      int buttonCount = SDL_JoystickNumButtons(joystick);
+      for (int i = 0; i < buttonCount; i++) {
+        buttonSet.push_back(false);
+      }
+      mJoystickButtonList.push_back(buttonSet);
+      std::cout << "Initialized " << SDL_JoystickNumAxes(joystick) << " axis " << buttonCount << " button joystick ";
+      std::cout << i << " \"" << SDL_JoystickName(mJoystickList[i]) << "\"." << std::endl;
     } else {
       Log::SdlError(std::cout, "SDL_JoystickOpen");
     }
@@ -129,5 +187,24 @@ int InputHandler::yValue(int pDeviceId, int pAxisId) {
     }
   }
   return result;
+}
+
+bool InputHandler::isButtonDown(int pDeviceId, int pButtonId) {
+  return mJoystickButtonList[pDeviceId][pButtonId];
+}
+
+Vector2D *InputHandler::getMousePosition(void) {
+  return &mMousePosition;
+}
+
+bool InputHandler::isMouseButtonDown(int pButtonId) {
+  return mMouseButtonList[pButtonId];
+}
+
+bool InputHandler::isKeyDown(SDL_Scancode pScancode) {
+  if (nullptr != mKeyState) {
+    return 0 != mKeyState[pScancode];
+  }
+  return false;
 }
 

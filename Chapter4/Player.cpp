@@ -7,10 +7,13 @@
 #include "SdlGameObject.h"
 #include "TextureManager.h"
 
-Player::Player(const LoaderParams *pParams) : SdlGameObject(pParams) {
+Player::Player(const LoaderParams *pParams) : SdlGameObject(pParams), mTarget(0.0, 0.0), mTargetApproachSpeed(0) {
   TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
   mAnimationFrames /= mWidth;
   mBaseRotation = 0;
+  mJoypadId = 0;
+  mScale = 1.5;
+  mOrbitScale = 1.0;
 }
 
 void Player::draw(void) {
@@ -19,11 +22,34 @@ void Player::draw(void) {
 
 void Player::handleInput(void) {
   InputHandler *inputHandler = InputHandler::Instance();
-  if (inputHandler->isInitialized()) {
-    float ddX = inputHandler->xValue(0, 0) + inputHandler->xValue(0, 1);
-    float ddY = inputHandler->yValue(0, 0) + inputHandler->yValue(0, 1);
-    mAcceleration.setX(ddX);
-    mAcceleration.setY(ddY);
+ if (inputHandler->isInitialized()) {
+    if (inputHandler->isMouseButtonDown(LEFT)) {
+      mTargetApproachSpeed = 1;
+      mTarget.setX(inputHandler->getMousePosition()->getX());
+      mTarget.setY(inputHandler->getMousePosition()->getY());
+    } else if (inputHandler->isMouseButtonDown(MIDDLE)) {
+      mTargetApproachSpeed = 0;
+      mTarget.setX(inputHandler->getMousePosition()->getX());
+      mTarget.setY(inputHandler->getMousePosition()->getY());
+    } else if (inputHandler->isMouseButtonDown(RIGHT)) {
+      mTargetApproachSpeed = -1;
+      mTarget.setX(inputHandler->getMousePosition()->getX());
+      mTarget.setY(inputHandler->getMousePosition()->getY());
+    }
+    float ddX = inputHandler->xValue(mJoypadId, 0) + inputHandler->xValue(mJoypadId, 1);
+    float ddY = inputHandler->yValue(mJoypadId, 0) + inputHandler->yValue(mJoypadId, 1);
+    if (inputHandler->isKeyDown(SDL_SCANCODE_RIGHT)) {
+      ddX++;
+    }
+    if (inputHandler->isKeyDown(SDL_SCANCODE_LEFT)) {
+      ddX--;
+    }
+    if (inputHandler->isKeyDown(SDL_SCANCODE_DOWN)) {
+      ddY++;
+    }
+    if (inputHandler->isKeyDown(SDL_SCANCODE_UP)) {
+      ddY--;
+    }
     if (0 != ddY && mBaseRotation < 90 && -90 < mBaseRotation) {
       mBaseRotation += ddY;
     } else if (0 == ddY && 0 < mBaseRotation) {
@@ -31,15 +57,33 @@ void Player::handleInput(void) {
     } else if (0 == ddY && mBaseRotation < 0) {
       mBaseRotation++;
     }
+    if (0 == ddY && 0 == ddX) {
+      Vector2D targetMovement = (mTarget - mPosition) * mTargetApproachSpeed;
+      targetMovement.normalize();
+      ddX = targetMovement.getX();
+      ddY = targetMovement.getY();
+    }
+    mAcceleration.setX(ddX);
+    mAcceleration.setY(ddY);
+  }
+  if (inputHandler->isButtonDown(mJoypadId, 0)) {
+    mScale -= 0.01;
+  } else if (inputHandler->isButtonDown(mJoypadId, 1)) {
+    mScale += 0.01;
+  }
+  if (inputHandler->isButtonDown(mJoypadId, 2)) {
+    mOrbitScale += 0.01;
+  } else if (inputHandler->isButtonDown(mJoypadId, 3)) {
+    mOrbitScale -= 0.01;
   }
 }
 
 void Player::update(void) {
   SdlGameObject::update();
   handleInput();
-  mScale = 1.0 + 0.5 * cos((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
-  float dX = 2.5 * cos((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
-  float dY = 1.0 * sin((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
+  mScale += (-1.0 / 60.0) * sin((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
+  float dX = 2.5 * mOrbitScale * cos((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
+  float dY = 1.0 * mOrbitScale * sin((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
   mVelocity.setX(dX);
   mVelocity.setY(dY);
   mAnimationFrame = mAnimationCounter * Constants::AnimationFrames() / Constants::FramesPerSecond() % mAnimationFrames;
