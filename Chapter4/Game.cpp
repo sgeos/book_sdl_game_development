@@ -109,6 +109,7 @@ void Game::reset(void) {
   }
   y = Constants::WindowHeight() / 2 - h / 2;
   mGameObjectList.push_back(new DemoGameObject(new LoaderParams("object", x, y, w, h)));
+  InputHandler::Instance()->initialiseJoysticks();
   mFrame = 0;
   mDone = mError = false;
 }

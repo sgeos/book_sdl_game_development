@@ -10,9 +10,11 @@ class Player : public SdlGameObject {
     void draw(void);
     void update(void);
     void cleanup(void);
+    void handleInput(void);
 
   private:
     int mAnimationFrames;
+    int mBaseRotation;
 };
 
 #endif // PLAYER_H
