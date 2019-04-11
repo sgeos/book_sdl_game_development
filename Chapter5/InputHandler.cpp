@@ -85,9 +85,6 @@ void InputHandler::onMouseButtonEvent(int pSdlButtonId, bool pIsDown) {
 
 void InputHandler::onKeyEvent(void) {
   mKeyState = SDL_GetKeyboardState(nullptr);
-  if (isKeyDown(SDL_SCANCODE_ESCAPE)) {
-    Game::Instance()->quit();
-  }
 }
 
 void InputHandler::update(void) {

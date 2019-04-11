@@ -34,7 +34,6 @@ class Game {
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
     GameStateMachine *mGameStateMachine;
-    std::vector<GameObject *> mGameObjectList;
     int mFrame;
     bool mDone;
     bool mError;

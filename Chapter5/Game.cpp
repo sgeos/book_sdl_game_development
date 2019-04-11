@@ -7,21 +7,19 @@
 #include <SDL2/SDL_ttf.h>
 
 #include "Constants.h"
-#include "DemoBackground.h"
-#include "DemoGameObject.h"
-#include "Enemy.h"
+#include "DemoState.h"
 #include "Game.h"
 #include "GameStateMachine.h"
 #include "InputHandler.h"
 #include "Log.h"
 #include "MenuState.h"
 #include "PlayState.h"
-#include "TextureManager.h"
 #include "Utility.h"
 
 Game *Game::sInstance = nullptr;
 
 Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
+  sInstance = this;
   reset();
   std::cout << Constants::ApplicationName() << " Game Start." << std::endl;
 }
@@ -32,10 +30,6 @@ Game::~Game(void) {
 }
 
 void Game::cleanup(void) {
-  while (false == mGameObjectList.empty()) {
-    delete mGameObjectList.back();
-    mGameObjectList.pop_back();
-  }
   Utility::cleanup(mRenderer, mWindow);
   InputHandler::Instance()->reset();
   TTF_Quit();
@@ -84,46 +78,17 @@ void Game::reset(void) {
     mDone = mError = true;
     return;
   }
+  InputHandler::Instance()->initialiseJoysticks();
   mGameStateMachine = new GameStateMachine();
   mGameStateMachine->changeState(new MenuState());
-
-  const std::string resourcePath = Constants::ResourcePath("");
-  TextureManager::Instance()->load(mRenderer, "object", resourcePath + "animate.png");
-  TextureManager::Instance()->load(mRenderer, "background", resourcePath + "background.png");
-  int w = 128;
-  int h = 82;
-  for (int j = 0; j < 5; j++) {
-    for (int i = 0; i < 5; i++) {
-      int x = i * Constants::WindowWidth() / 4 - w/2;
-      int y = j * Constants::WindowHeight() / 4 - h / 2;
-      SDL_RendererFlip xFlip = (0 != (i % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-      SDL_RendererFlip yFlip = (0 != (j % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-      SDL_RendererFlip flip = (SDL_RendererFlip)(xFlip | yFlip);
-      mGameObjectList.push_back(new Enemy(new LoaderParams("object", x, y, w, h, 1.0, 0.0, flip)));
-    }
-  }
-  int tileWidth, tileHeight;
-  TextureManager::Instance()->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
-  mGameObjectList.push_back(new DemoBackground(new LoaderParams("object", 0, 0, tileWidth, tileHeight)));
-  mGameObjectList.push_back(new DemoBackground(new LoaderParams("background", 0, 0, tileWidth, tileHeight)));
-  int x = Constants::WindowWidth() / 2 - w / 2;
-  int y;
-  for (int i = 0; i < 5; i++) {
-    y = i * Constants::WindowHeight() / 4 - h / 2;
-    mGameObjectList.push_back(new Player(new LoaderParams("object", x, y, w, h)));
-  }
-  y = Constants::WindowHeight() / 2 - h / 2;
-  mGameObjectList.push_back(new DemoGameObject(new LoaderParams("object", x, y, w, h)));
-  InputHandler::Instance()->initialiseJoysticks();
+  mGameStateMachine->pushState(new DemoState());
   mFrame = 0;
   mDone = mError = false;
 }
 
 void Game::render(void) {
   SDL_RenderClear(mRenderer);
-  for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
-    mGameObjectList[i]->draw();
-  }
+  mGameStateMachine->render();
   SDL_RenderPresent(mRenderer);
   if (0 == mFrame % Constants::FramesPerSecond()) {
     std::cout << Constants::ApplicationName() << " Frame: " << mFrame << std::endl;
@@ -131,17 +96,21 @@ void Game::render(void) {
 }
 
 void Game::update(void) {
-  for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
-    mGameObjectList[i]->update();
+  if (false == mGameStateMachine->empty()) {
+    mGameStateMachine->update();
+    mFrame++;
+  } else {
+    mDone = true;
   }
-  mFrame++;
 }
 
 void Game::handleEvents(void) {
   InputHandler::Instance()->update();
-
   if (InputHandler::Instance()->isKeyDown(SDL_SCANCODE_RETURN)) {
     mGameStateMachine->changeState(new PlayState());
+  }
+  if (InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
+    mGameStateMachine->popState();
   }
 }
 

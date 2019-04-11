@@ -9,6 +9,9 @@ class GameStateMachine {
     void changeState(GameState *pState);
     void pushState(GameState *pState);
     void popState(void);
+    bool empty(void);
+    void update(void);
+    void render(void);
 
   private:
     std::vector<GameState *> mStateStack;

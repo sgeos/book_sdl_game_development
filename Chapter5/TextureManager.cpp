@@ -12,8 +12,10 @@ bool TextureManager::load(SDL_Renderer *pRenderer, std::string pId, std::string 
     Log::SdlError(std::cout, "LoadTexture");
     return false;
   }
+  if (nullptr != mTextureMap[pId]) {
+    SDL_DestroyTexture(mTextureMap[pId]);
+  }
   mTextureMap[pId] = texture;
-  return texture;
   return true;
 }
 

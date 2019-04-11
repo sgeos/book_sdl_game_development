@@ -17,7 +17,7 @@ void GameStateMachine::changeState(GameState *pState) {
 
 void GameStateMachine::pushState(GameState *pState) {
   mStateStack.push_back(pState);
-  pState->onEnter();
+  mStateStack.back()->onEnter();
 }
 
 void GameStateMachine::popState(void) {
@@ -26,6 +26,22 @@ void GameStateMachine::popState(void) {
       delete mStateStack.back();
       mStateStack.pop_back();
     }
+  }
+}
+
+bool GameStateMachine::empty(void) {
+  return mStateStack.empty();
+}
+
+void GameStateMachine::update(void) {
+  if (false == mStateStack.empty()) {
+    mStateStack.back()->update();
+  }
+}
+
+void GameStateMachine::render(void) {
+  if (false == mStateStack.empty()) {
+    mStateStack.back()->render();
   }
 }
 
