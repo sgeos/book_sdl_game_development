@@ -6,11 +6,11 @@
 class Vector2D {
   public:
     Vector2D(float pX, float pY) : mX(pX), mY(pY) { }
-    float getX(void) { return mX; }
-    float getY(void) { return mY; }
+    float getX(void) const { return mX; }
+    float getY(void) const { return mY; }
     void setX(float pX) { mX = pX; }
     void setY(float pY) { mY = pY; }
-    float length(void) { return sqrt(mX*mX + mY*mY); }
+    float length(void) const { return sqrt(mX*mX + mY*mY); }
     void normalize(void) {
       float vectorLength = length();
       if (0 < vectorLength) {

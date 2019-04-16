@@ -9,6 +9,7 @@
 #include "DemoState.h"
 #include "DemoBackgroundObject.h"
 #include "Game.h"
+#include "InputHandler.h"
 #include "TextureManager.h"
 
 const std::string DemoState::sStateId = "DEMO";
@@ -16,6 +17,10 @@ const std::string DemoState::sStateId = "DEMO";
 void DemoState::update(void) {
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->update();
+  }
+  int joypadId = 0;
+  if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
+    Game::Instance()->getStateMachine()->popState();
   }
 }
 
@@ -27,10 +32,9 @@ void DemoState::render(void) {
 
 bool DemoState::onEnter(void) {
   std::cout << "Entering DemoState \"" << sStateId << "\"." << std::endl;
-  SDL_Renderer *renderer = Game::Instance()->getRenderer();
   const std::string resourcePath = Constants::ResourcePath("");
-  TextureManager::Instance()->load(renderer, "object", resourcePath + "animate.png");
-  TextureManager::Instance()->load(renderer, "background", resourcePath + "background.png");
+  TextureManager::Instance()->load("object", resourcePath + "animate.png");
+  TextureManager::Instance()->load("background", resourcePath + "background.png");
   const int w = 128;
   const int h = 82;
   for (int j = -1; j < 5; j++) {

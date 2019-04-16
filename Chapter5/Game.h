@@ -25,6 +25,7 @@ class Game {
     void tick(void);
     int getFrame(void);
     SDL_Renderer *getRenderer(void);
+    GameStateMachine *getStateMachine(void);
     void quit(void);
     bool isDone(void);
     bool isError(void);

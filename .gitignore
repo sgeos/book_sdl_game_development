@@ -28,6 +28,7 @@
 
 # Temporary Files
 *.swp
+*.tmp
 
 # MacOS
 .DS_Store

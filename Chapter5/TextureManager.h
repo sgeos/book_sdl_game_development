@@ -12,9 +12,9 @@ class TextureManager {
       }
       return sInstance;
     }
-    bool load(SDL_Renderer *pRenderer, std::string pId, std::string pFileName);
+    bool load(std::string pId, std::string pFileName);
+    void unload(std::string pId);
     void draw(
-      SDL_Renderer *pRenderer,
       std::string pId,
       int pPositionX,
       int pPositionY,
@@ -25,7 +25,6 @@ class TextureManager {
       SDL_RendererFlip pFlip = SDL_FLIP_NONE
     );
     void drawFrame(
-      SDL_Renderer *pRenderer,
       std::string pId,
       int pPositionX,
       int pPositionY,

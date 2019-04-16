@@ -1,11 +1,17 @@
 #include <iostream>
 #include <string>
+#include "Game.h"
+#include "InputHandler.h"
 #include "PlayState.h"
 
 const std::string PlayState::sStateId = "PLAY";
 
 void PlayState::update(void) {
   // TODO: add functionality
+  int joypadId = 0;
+  if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
+    Game::Instance()->getStateMachine()->popState();
+  }
 }
 
 void PlayState::render(void) {

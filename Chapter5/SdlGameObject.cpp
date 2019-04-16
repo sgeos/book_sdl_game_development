@@ -26,7 +26,6 @@ SdlGameObject::SdlGameObject(const LoaderParams *pParams) :
 
 void SdlGameObject::draw(void) {
   TextureManager::Instance()->drawFrame(
-    Game::Instance()->getRenderer(),
     mTextureId,
     (int)mPosition.getX(), (int)mPosition.getY(), mWidth, mHeight,
     mAnimationRow, mAnimationFrame,

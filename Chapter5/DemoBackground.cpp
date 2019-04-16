@@ -27,11 +27,7 @@ void DemoBackground::draw(void) {
       SDL_RendererFlip xFlip = (0 != (xIndex % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
       SDL_RendererFlip yFlip = (0 != (yIndex % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
       SDL_RendererFlip flip = (SDL_RendererFlip)(xFlip | yFlip);
-      TextureManager::Instance()->draw(
-        Game::Instance()->getRenderer(),
-        mTextureId, x, y, mTileWidth, mTileHeight,
-        1.0, 0.0, flip
-      );
+      TextureManager::Instance()->draw(mTextureId, x, y, mTileWidth, mTileHeight, 1.0, 0.0, flip);
     }
   }
 }

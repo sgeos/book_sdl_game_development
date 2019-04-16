@@ -13,7 +13,6 @@
 #include "InputHandler.h"
 #include "Log.h"
 #include "MenuState.h"
-#include "PlayState.h"
 #include "Utility.h"
 
 Game *Game::sInstance = nullptr;
@@ -80,8 +79,8 @@ void Game::reset(void) {
   }
   InputHandler::Instance()->initialiseJoysticks();
   mGameStateMachine = new GameStateMachine();
-  mGameStateMachine->changeState(new MenuState());
-  mGameStateMachine->pushState(new DemoState());
+  mGameStateMachine->changeState(new DemoState());
+  mGameStateMachine->pushState(new MenuState());
   mFrame = 0;
   mDone = mError = false;
 }
@@ -106,12 +105,6 @@ void Game::update(void) {
 
 void Game::handleEvents(void) {
   InputHandler::Instance()->update();
-  if (InputHandler::Instance()->isKeyDown(SDL_SCANCODE_RETURN)) {
-    mGameStateMachine->changeState(new PlayState());
-  }
-  if (InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
-    mGameStateMachine->popState();
-  }
 }
 
 void Game::tick(void) {
@@ -127,6 +120,10 @@ void Game::tick(void) {
 
 int Game::getFrame(void) {
   return mFrame;
+}
+
+GameStateMachine *Game::getStateMachine(void) {
+  return mGameStateMachine;
 }
 
 SDL_Renderer *Game::getRenderer(void) {
