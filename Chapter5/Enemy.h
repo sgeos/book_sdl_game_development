@@ -10,6 +10,9 @@ class Enemy : public SdlGameObject {
     void draw(void);
     void update(void);
     void cleanup(void);
+
+  private:
+    int mAnimationFrames;
 };
 
 #endif // ENEMY_H

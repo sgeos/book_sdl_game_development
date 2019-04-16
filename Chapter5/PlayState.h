@@ -14,6 +14,7 @@ class PlayState : public GameState {
 
   private:
     static const std::string sStateId;
+    std::vector<GameObject *> mGameObjectList;
 };
 
 #endif // PLAY_STATE_H

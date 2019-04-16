@@ -10,6 +10,7 @@ InputHandler::InputHandler(void) : mMousePosition(0.0, 0.0) {
   for (int i = 0; i < 3; i++) {
     mMouseButtonList.push_back(false);
   }
+  onKeyEvent();
 }
 
 InputHandler::~InputHandler(void) {

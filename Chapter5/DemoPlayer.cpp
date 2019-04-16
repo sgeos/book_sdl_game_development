@@ -22,7 +22,7 @@ void DemoPlayer::draw(void) {
 
 void DemoPlayer::handleInput(void) {
   InputHandler *inputHandler = InputHandler::Instance();
- if (inputHandler->isInitialized()) {
+  if (inputHandler->isInitialized()) {
     if (inputHandler->isMouseButtonDown(LEFT)) {
       mTargetApproachSpeed = 1;
       mTarget.setX(inputHandler->getMousePosition()->getX());

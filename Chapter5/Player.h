@@ -14,10 +14,6 @@ class Player : public SdlGameObject {
 
   private:
     int mAnimationFrames;
-    int mBaseRotation;
-    float mOrbitScale;
-    int mJoypadId;
-    Vector2D mTarget;
     int mTargetApproachSpeed;
 };
 

@@ -11,9 +11,14 @@
 
 const std::string MenuState::sStateId = "MENU";
 
+GameState *MenuState::sTransitionState = nullptr;
+
 void MenuState::update(void) {
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->update();
+  }
+  if (nullptr != sTransitionState) {
+    Game::Instance()->getStateMachine()->changeState(sTransitionState);
   }
 }
 
@@ -24,6 +29,7 @@ void MenuState::render(void) {
 }
 
 bool MenuState::onEnter(void) {
+  sTransitionState = nullptr;
   const std::string resourcePath = Constants::ResourcePath("");
   bool success = TextureManager::Instance()->load("play_button", resourcePath + "play_button.png");
   success = success && TextureManager::Instance()->load("exit_button", resourcePath + "exit_button.png");
@@ -50,14 +56,16 @@ bool MenuState::onExit(void) {
     delete mGameObjectList.back();
     mGameObjectList.pop_back();
   }
+  mGameObjectList.clear();
   TextureManager::Instance()->unload("play_button");
   TextureManager::Instance()->unload("exit_button");
+  TextureManager::Instance()->unload("background");
   std::cout << "Exiting MenuState \"" << sStateId << "\"." << std::endl;
   return true;
 }
 
 void MenuState::sMenuToPlay(void) {
-  Game::Instance()->getStateMachine()->changeState(new PlayState());
+  sTransitionState = new PlayState();
 }
 
 void MenuState::sExitMenu(void) {
