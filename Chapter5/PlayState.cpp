@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "InputHandler.h"
 #include "PlayState.h"
+#include "PauseState.h"
 
 const std::string PlayState::sStateId = "PLAY";
 
@@ -15,7 +16,7 @@ void PlayState::update(void) {
   }
   int joypadId = 0;
   if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
-    Game::Instance()->getStateMachine()->popState();
+    Game::Instance()->getStateMachine()->pushState(new PauseState());
   }
 }
 
@@ -29,11 +30,11 @@ bool PlayState::onEnter(void) {
   const std::string resourcePath = Constants::ResourcePath("");
   bool success = TextureManager::Instance()->load("player", resourcePath + "helicopter0.png");
   success = success && TextureManager::Instance()->load("enemy", resourcePath + "helicopter1.png");
-  success = success && TextureManager::Instance()->load("background", resourcePath + "background.png");
+  success = success && TextureManager::Instance()->load("play_background", resourcePath + "background.png");
   if (success) {
     int tileWidth, tileHeight;
-    TextureManager::Instance()->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
-    mGameObjectList.push_back(new DemoBackground(new LoaderParams("background", 0, 0, tileWidth, tileHeight)));
+    TextureManager::Instance()->queryTexture("play_background", nullptr, nullptr, &tileWidth, &tileHeight);
+    mGameObjectList.push_back(new DemoBackground(new LoaderParams("play_background", 0, 0, tileWidth, tileHeight)));
     int x, y, w, h;
     TextureManager::Instance()->queryTexture("player", nullptr, nullptr, &w, &h);
     w /= 5;
@@ -54,7 +55,7 @@ bool PlayState::onExit(void) {
   }
   TextureManager::Instance()->unload("player");
   TextureManager::Instance()->unload("enemy");
-  TextureManager::Instance()->unload("background");
+  TextureManager::Instance()->unload("play_background");
   std::cout << "Exiting PlayState \"" << sStateId << "\"." << std::endl;
   return true;
 }

@@ -10,6 +10,7 @@
 #include "DemoBackgroundObject.h"
 #include "Game.h"
 #include "InputHandler.h"
+#include "PauseState.h"
 #include "TextureManager.h"
 
 const std::string DemoState::sStateId = "DEMO";
@@ -20,7 +21,7 @@ void DemoState::update(void) {
   }
   int joypadId = 0;
   if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
-    Game::Instance()->getStateMachine()->popState();
+    Game::Instance()->getStateMachine()->pushState(new PauseState());
   }
 }
 
@@ -34,7 +35,7 @@ bool DemoState::onEnter(void) {
   std::cout << "Entering DemoState \"" << sStateId << "\"." << std::endl;
   const std::string resourcePath = Constants::ResourcePath("");
   TextureManager::Instance()->load("object", resourcePath + "animate.png");
-  TextureManager::Instance()->load("background", resourcePath + "background.png");
+  TextureManager::Instance()->load("demo_background", resourcePath + "background.png");
   const int w = 128;
   const int h = 82;
   for (int j = -1; j < 5; j++) {
@@ -48,9 +49,9 @@ bool DemoState::onEnter(void) {
     }
   }
   int tileWidth, tileHeight;
-  TextureManager::Instance()->queryTexture("background", nullptr, nullptr, &tileWidth, &tileHeight);
+  TextureManager::Instance()->queryTexture("demo_background", nullptr, nullptr, &tileWidth, &tileHeight);
   mGameObjectList.push_back(new DemoBackground(new LoaderParams("object", 0, 0, tileWidth, tileHeight)));
-  mGameObjectList.push_back(new DemoBackground(new LoaderParams("background", 0, 0, tileWidth, tileHeight)));
+  mGameObjectList.push_back(new DemoBackground(new LoaderParams("demo_background", 0, 0, tileWidth, tileHeight)));
   int x = Constants::WindowWidth() / 2 - w / 2;
   int y;
   for (int i = 0; i < 5; i++) {
@@ -67,6 +68,8 @@ bool DemoState::onExit(void) {
     delete mGameObjectList.back();
     mGameObjectList.pop_back();
   }
+  TextureManager::Instance()->unload("object");
+  TextureManager::Instance()->unload("demo_background");
   std::cout << "Exiting DemoState \"" << sStateId << "\"." << std::endl;
   return true;
 }
