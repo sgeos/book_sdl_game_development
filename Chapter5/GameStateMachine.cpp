@@ -1,6 +1,22 @@
 #include <vector>
 #include "GameStateMachine.h"
 
+void GameStateMachine::popAndChangeState(GameState *pState) {
+  for (int i = 0; i < 2; i++) {
+    if (false == mStateStack.empty()) {
+      if (mStateStack.back()->getStateId() == pState->getStateId()) {
+        return;
+      }
+      if (true == mStateStack.back()->onExit()) {
+        delete mStateStack.back();
+        mStateStack.pop_back();
+      }
+    }
+  }
+  mStateStack.push_back(pState);
+  pState->onEnter();
+}
+
 void GameStateMachine::changeState(GameState *pState) {
   if (false == mStateStack.empty()) {
     if (mStateStack.back()->getStateId() == pState->getStateId()) {

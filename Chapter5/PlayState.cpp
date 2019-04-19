@@ -4,9 +4,11 @@
 #include "DemoBackground.h"
 #include "Enemy.h"
 #include "Game.h"
+#include "GameOverState.h"
 #include "InputHandler.h"
 #include "PlayState.h"
 #include "PauseState.h"
+#include "Vector2D.h"
 
 const std::string PlayState::sStateId = "PLAY";
 
@@ -15,7 +17,9 @@ void PlayState::update(void) {
     mGameObjectList[i]->update();
   }
   int joypadId = 0;
-  if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
+  if (checkCollision(dynamic_cast<SdlGameObject *>(mGameObjectList[1]), dynamic_cast<SdlGameObject *>(mGameObjectList[2]))) {
+    Game::Instance()->getStateMachine()->changeState(new GameOverState());
+  } else if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
     Game::Instance()->getStateMachine()->pushState(new PauseState());
   }
 }
@@ -39,7 +43,7 @@ bool PlayState::onEnter(void) {
     TextureManager::Instance()->queryTexture("player", nullptr, nullptr, &w, &h);
     w /= 5;
     x = (Constants::WindowWidth() - w) / 2;
-    y = (Constants::WindowHeight() - h) / 2 - h;
+    y = (Constants::WindowHeight() - h) / 2 - 200;
     mGameObjectList.push_back(new Enemy(new LoaderParams("enemy", x, y, w, h)));
     y = (Constants::WindowHeight() - h) / 2;
     mGameObjectList.push_back(new Player(new LoaderParams("player", x, y, w, h)));
@@ -58,5 +62,22 @@ bool PlayState::onExit(void) {
   TextureManager::Instance()->unload("play_background");
   std::cout << "Exiting PlayState \"" << sStateId << "\"." << std::endl;
   return true;
+}
+
+bool PlayState::checkCollision(SdlGameObject *pObjectA, SdlGameObject *pObjectB) {
+  int leftA, rightA, topA, bottomA;
+  int leftB, rightB, topB, bottomB;
+
+  leftA = pObjectA->getPosition().getX();
+  rightA = leftA + pObjectA->getWidth();
+  topA = pObjectA->getPosition().getY();
+  bottomA = topA + pObjectA->getHeight();
+
+  leftB = pObjectB->getPosition().getX();
+  rightB = leftB + pObjectB->getWidth();
+  topB = pObjectB->getPosition().getY();
+  bottomB = topB + pObjectB->getHeight();
+
+  return topA < bottomB && topB < bottomA && leftA < rightB && leftB < rightA;
 }
 

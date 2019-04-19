@@ -6,7 +6,7 @@
 
 class DemoBackground : public GameObject {
   public:
-    DemoBackground(const LoaderParams *pParams);
+    DemoBackground(const LoaderParams *pParams, int pMaxIntensity = 255);
     virtual void draw();
     virtual void update();
     virtual void cleanup();
@@ -17,6 +17,7 @@ class DemoBackground : public GameObject {
     int mTileWidth, mTileHeight;
     int mAnimationCounter;
     int mRed, mGreen, mBlue, mAlpha;
+    int mMaxIntensity;
 };
 
 #endif // DEMO_BACKGROUND_H

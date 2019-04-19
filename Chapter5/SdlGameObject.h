@@ -8,9 +8,12 @@
 class SdlGameObject : public GameObject {
   public:
     SdlGameObject(const LoaderParams *pParams);
-    virtual void draw();
-    virtual void update();
-    virtual void cleanup();
+    virtual void draw(void);
+    virtual void update(void);
+    virtual void cleanup(void);
+    Vector2D &getPosition(void);
+    int getWidth(void);
+    int getHeight(void);
 
   protected:
     std::string mTextureId;

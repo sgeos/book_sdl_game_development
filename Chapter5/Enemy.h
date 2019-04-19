@@ -13,6 +13,7 @@ class Enemy : public SdlGameObject {
 
   private:
     int mAnimationFrames;
+    int mRadiusX, mRadiusY;
 };
 
 #endif // ENEMY_H

@@ -9,7 +9,7 @@ EXE = ../bin/Chapter5
 .PHONY: all
 all: $(EXE)
 
-$(EXE): main.o Constants.o DemoBackground.o DemoBackgroundObject.o DemoGameObject.o DemoPlayer.o DemoState.o Enemy.o Game.o GameStateMachine.o InputHandler.o LoaderParams.o Log.o MenuButton.o MenuState.o PauseState.o Player.o PlayState.o SdlGameObject.o TextureManager.o
+$(EXE): main.o AnimatedGameObject.o Constants.o DemoBackground.o DemoBackgroundObject.o DemoGameObject.o DemoPlayer.o DemoState.o Enemy.o Game.o GameOverState.o GameStateMachine.o InputHandler.o LoaderParams.o Log.o MenuButton.o MenuState.o PauseState.o Player.o PlayState.o SdlGameObject.o TextureManager.o
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 .o: .cpp

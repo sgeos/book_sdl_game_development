@@ -1,10 +1,10 @@
-#ifndef PLAY_STATE_H
-#define PLAY_STATE_H
+#ifndef GAME_OVER_STATE_H
+#define GAME_OVER_STATE_H
 
 #include <string>
 #include "GameState.h"
 
-class PlayState : public GameState {
+class GameOverState : public GameState {
   public:
     virtual void update(void);
     virtual void render(void);
@@ -16,8 +16,10 @@ class PlayState : public GameState {
     static const std::string sStateId;
     std::vector<GameObject *> mGameObjectList;
 
-    bool checkCollision(SdlGameObject *pObjectA, SdlGameObject *pObjectB);
+    static GameState *sTransitionState;
+    static void sGameOverToMain();
+    static void sRestartPlay();
 };
 
-#endif // PLAY_STATE_H
+#endif // GAME_OVER_STATE_H
 

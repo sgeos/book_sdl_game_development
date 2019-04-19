@@ -19,8 +19,7 @@ void PauseState::update(void) {
     mGameObjectList[i]->update();
   }
   if (nullptr != sTransitionState) {
-    Game::Instance()->getStateMachine()->popState();
-    Game::Instance()->getStateMachine()->changeState(sTransitionState);
+    Game::Instance()->getStateMachine()->popAndChangeState(sTransitionState);
   }
 }
 
@@ -58,7 +57,7 @@ bool PauseState::onExit(void) {
     delete mGameObjectList.back();
     mGameObjectList.pop_back();
   }
-  TextureManager::Instance()->unload("main_menu_btton");
+  TextureManager::Instance()->unload("main_menu_button");
   TextureManager::Instance()->unload("resume_button");
   TextureManager::Instance()->unload("pause_background");
   std::cout << "Exiting PauseState \"" << sStateId << "\"." << std::endl;
