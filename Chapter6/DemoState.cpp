@@ -11,9 +11,10 @@
 #include "Game.h"
 #include "InputHandler.h"
 #include "PauseState.h"
+#include "StateParser.h"
 #include "TextureManager.h"
 
-const std::string DemoState::sStateId = "DEMO";
+const std::string DemoState::sStateId = "demo";
 
 void DemoState::update(void) {
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
@@ -32,45 +33,9 @@ void DemoState::render(void) {
 }
 
 bool DemoState::onEnter(void) {
-  std::cout << "Entering DemoState \"" << sStateId << "\"." << std::endl;
-  const std::string resourcePath = Constants::ResourcePath("");
-  TextureManager::Instance()->load("object", resourcePath + "animate.png");
-  TextureManager::Instance()->load("demo_background", resourcePath + "background.png");
-  const int w = 128;
-  const int h = 82;
-  for (int j = -1; j < 5; j++) {
-    for (int i = 0; i < 5; i++) {
-      int x = i * Constants::WindowWidth() / 4 - w / 2;
-      int y = j * Constants::WindowHeight() / 4 - h / 2;
-      SDL_RendererFlip xFlip = (0 != (i % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
-      SDL_RendererFlip yFlip = (0 != (j % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
-      SDL_RendererFlip flip = (SDL_RendererFlip)(xFlip | yFlip);
-      mGameObjectList.push_back(new DemoBackgroundObject(new LoaderParams("object", x, y, w, h, 1.0, 0.0, flip)));
-    }
-  }
-  int tileWidth, tileHeight;
-  TextureManager::Instance()->queryTexture("demo_background", nullptr, nullptr, &tileWidth, &tileHeight);
-  mGameObjectList.push_back(new DemoBackground(new LoaderParams("object", 0, 0, tileWidth, tileHeight)));
-  mGameObjectList.push_back(new DemoBackground(new LoaderParams("demo_background", 0, 0, tileWidth, tileHeight)));
-  int x = Constants::WindowWidth() / 2 - w / 2;
-  int y;
-  for (int i = 0; i < 5; i++) {
-    y = i * Constants::WindowHeight() / 4 - h / 2;
-    mGameObjectList.push_back(new DemoPlayer(new LoaderParams("object", x, y, w, h)));
-  }
-  y = Constants::WindowHeight() / 2 - h / 2;
-  mGameObjectList.push_back(new DemoGameObject(new LoaderParams("object", x, y, w, h)));
-  return true;
-}
-
-bool DemoState::onExit(void) {
-  while (false == mGameObjectList.empty()) {
-    delete mGameObjectList.back();
-    mGameObjectList.pop_back();
-  }
-  TextureManager::Instance()->unload("object");
-  TextureManager::Instance()->unload("demo_background");
-  std::cout << "Exiting DemoState \"" << sStateId << "\"." << std::endl;
+  StateParser stateParser;
+  stateParser.parseState("demo.xml", sStateId, &mGameObjectList, &mTextureIdList);
+  std::cout << "Entering state \"" << sStateId << "\"." << std::endl;
   return true;
 }
 

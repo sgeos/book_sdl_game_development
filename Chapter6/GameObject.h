@@ -6,13 +6,11 @@
 class GameObject {
   public:
     GameObject(void) { }
-    virtual ~GameObject() { }
-    virtual void draw() = 0;
-    virtual void update() = 0;
-    virtual void cleanup() = 0;
-
-  protected:
-    GameObject(const LoaderParams *pParams) {}
+    virtual ~GameObject(void) { }
+    virtual void load(const LoaderParams *pParams) = 0;
+    virtual void draw(void) = 0;
+    virtual void update(void) = 0;
+    virtual void cleanup(void) = 0;
 };
 
 #endif // GAME_OBJECT_H

@@ -7,13 +7,23 @@
 #include "SdlGameObject.h"
 #include "TextureManager.h"
 
-DemoPlayer::DemoPlayer(const LoaderParams *pParams) : SdlGameObject(pParams), mTarget(0.0, 0.0), mTargetApproachSpeed(0) {
-  TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-  mAnimationFrames /= mWidth;
-  mBaseRotation = 0;
-  mJoypadId = 0;
+DemoPlayer::DemoPlayer(void) :
+  mAnimationFrames(0),
+  mBaseRotation(0),
+  mOrbitScale(1.0),
+  mJoypadId(0),
+  mTarget(0.0, 0.0),
+  mTargetApproachSpeed(0)
+{
   mScale = 1.5;
-  mOrbitScale = 1.0;
+}
+
+void DemoPlayer::load(const LoaderParams *pParams) {
+  SdlGameObject::load(pParams);
+  if (0 == mAnimationFrames) {
+    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
+    mAnimationFrames /= mWidth;
+  }
 }
 
 void DemoPlayer::draw(void) {

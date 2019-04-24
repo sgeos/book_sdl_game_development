@@ -8,9 +8,10 @@
 #include "InputHandler.h"
 #include "PlayState.h"
 #include "PauseState.h"
+#include "StateParser.h"
 #include "Vector2D.h"
 
-const std::string PlayState::sStateId = "PLAY";
+const std::string PlayState::sStateId = "play";
 
 void PlayState::update(void) {
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
@@ -31,36 +32,9 @@ void PlayState::render(void) {
 }
 
 bool PlayState::onEnter(void) {
-  const std::string resourcePath = Constants::ResourcePath("");
-  bool success = TextureManager::Instance()->load("player", resourcePath + "helicopter0.png");
-  success = success && TextureManager::Instance()->load("enemy", resourcePath + "helicopter1.png");
-  success = success && TextureManager::Instance()->load("play_background", resourcePath + "background.png");
-  if (success) {
-    int tileWidth, tileHeight;
-    TextureManager::Instance()->queryTexture("play_background", nullptr, nullptr, &tileWidth, &tileHeight);
-    mGameObjectList.push_back(new DemoBackground(new LoaderParams("play_background", 0, 0, tileWidth, tileHeight)));
-    int x, y, w, h;
-    TextureManager::Instance()->queryTexture("player", nullptr, nullptr, &w, &h);
-    w /= 5;
-    x = (Constants::WindowWidth() - w) / 2;
-    y = (Constants::WindowHeight() - h) / 2 - 200;
-    mGameObjectList.push_back(new Enemy(new LoaderParams("enemy", x, y, w, h)));
-    y = (Constants::WindowHeight() - h) / 2;
-    mGameObjectList.push_back(new Player(new LoaderParams("player", x, y, w, h)));
-    std::cout << "Entering PlayState \"" << sStateId << "\"." << std::endl;
-  }
-  return true;
-}
-
-bool PlayState::onExit(void) {
-  while (false == mGameObjectList.empty()) {
-    delete mGameObjectList.back();
-    mGameObjectList.pop_back();
-  }
-  TextureManager::Instance()->unload("player");
-  TextureManager::Instance()->unload("enemy");
-  TextureManager::Instance()->unload("play_background");
-  std::cout << "Exiting PlayState \"" << sStateId << "\"." << std::endl;
+  StateParser stateParser;
+  stateParser.parseState("demo.xml", sStateId, &mGameObjectList, &mTextureIdList);
+  std::cout << "Entering state \"" << sStateId << "\"." << std::endl;
   return true;
 }
 

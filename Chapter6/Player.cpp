@@ -7,9 +7,14 @@
 #include "SdlGameObject.h"
 #include "TextureManager.h"
 
-Player::Player(const LoaderParams *pParams) : SdlGameObject(pParams), mTargetApproachSpeed(6) {
-  TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-  mAnimationFrames /= mWidth;
+Player::Player(void) : mAnimationFrames(1), mTargetApproachSpeed(6) { }
+
+void Player::load(const LoaderParams *pParams) {
+  SdlGameObject::load(pParams);
+  if (0 == mAnimationFrames) {
+    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
+    mAnimationFrames /= mWidth;
+  }
 }
 
 void Player::draw(void) {

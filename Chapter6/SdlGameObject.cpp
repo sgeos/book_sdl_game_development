@@ -7,12 +7,24 @@
 #include "LoaderParams.h"
 #include "TextureManager.h"
 
-SdlGameObject::SdlGameObject(const LoaderParams *pParams) :
-  GameObject(pParams),
-  mPosition(pParams->getX(), pParams->getY()),
+SdlGameObject::SdlGameObject(void) :
+  mTextureId(""),
+  mPosition(0.0, 0.0),
   mVelocity(0.0, 0.0),
-  mAcceleration(0.0, 0.0)
+  mAcceleration(0.0, 0.0),
+  mWidth(0.0),
+  mHeight(0.0),
+  mScale(1.0),
+  mRotation(0.0),
+  mFlip(SDL_FLIP_NONE),
+  mAnimationCounter(0),
+  mAnimationFrame(0),
+  mAnimationRow(0)
+{ }
+
+void SdlGameObject::load(const LoaderParams *pParams)
 {
+  mPosition = Vector2D(pParams->getX(), pParams->getY());
   mTextureId = pParams->getTextureId();
   mWidth = pParams->getWidth();
   mHeight = pParams->getHeight();

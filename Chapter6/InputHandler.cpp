@@ -188,7 +188,7 @@ int InputHandler::yValue(int pDeviceId, int pAxisId) {
 }
 
 bool InputHandler::isButtonDown(int pDeviceId, int pButtonId) {
-  return mJoystickButtonList[pDeviceId][pButtonId];
+  return pDeviceId < mJoystickButtonList.size() ? mJoystickButtonList[pDeviceId][pButtonId] : false;
 }
 
 Vector2D *InputHandler::getMousePosition(void) {

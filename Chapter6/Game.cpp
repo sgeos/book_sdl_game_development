@@ -6,19 +6,36 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "AnimatedGameObject.h"
 #include "Constants.h"
+#include "DemoBackground.h"
+#include "DemoBackgroundObject.h"
+#include "DemoGameObject.h"
+#include "DemoPlayer.h"
 #include "DemoState.h"
+#include "Enemy.h"
 #include "Game.h"
+#include "GameObjectFactory.h"
 #include "GameStateMachine.h"
 #include "InputHandler.h"
 #include "Log.h"
-#include "MenuState.h"
+#include "MainMenuState.h"
+#include "MenuButton.h"
+#include "Player.h"
 #include "Utility.h"
 
 Game *Game::sInstance = nullptr;
 
 Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
   sInstance = this;
+  GameObjectFactory::Instance()->registerType("AnimatedGameObject", new AnimatedGameObjectCreator());
+  GameObjectFactory::Instance()->registerType("DemoBackground", new DemoBackgroundCreator());
+  GameObjectFactory::Instance()->registerType("DemoBackgroundObject", new DemoBackgroundObjectCreator());
+  GameObjectFactory::Instance()->registerType("DemoGameObject", new DemoGameObjectCreator());
+  GameObjectFactory::Instance()->registerType("DemoPlayer", new DemoPlayerCreator());
+  GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
+  GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
+  GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
   reset();
   std::cout << Constants::ApplicationName() << " Game Start." << std::endl;
 }
@@ -80,7 +97,7 @@ void Game::reset(void) {
   InputHandler::Instance()->initialiseJoysticks();
   mGameStateMachine = new GameStateMachine();
   mGameStateMachine->changeState(new DemoState());
-  mGameStateMachine->pushState(new MenuState());
+  mGameStateMachine->pushState(new MainMenuState());
   mFrame = 0;
   mDone = mError = false;
 }

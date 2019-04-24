@@ -3,8 +3,13 @@
 #include "LoaderParams.h"
 #include "MenuButton.h"
 
-MenuButton::MenuButton(const LoaderParams *pParams, void (*pCallback)(void)) : SdlGameObject(pParams), mCallback(pCallback) {
+MenuButton::MenuButton(void) : mCallback(nullptr) {
   mAnimationFrame = MOUSE_OUT;
+}
+
+void MenuButton::load(const LoaderParams *pParams) {
+  SdlGameObject::load(pParams);
+  mCallbackId = pParams->getCallbackId();
 }
 
 void MenuButton::draw(void) {
@@ -30,7 +35,7 @@ void MenuButton::update(void) {
     if (false == mWasOutOfBounds && false == mWasClicked && true == isClicked) {
       mRunCallback = true;
     }
-    if (true == mRunCallback && false == isClicked) {
+    if (true == mRunCallback && false == isClicked && nullptr != mCallback) {
       mCallback();
       mRunCallback = false;
     }
@@ -42,5 +47,13 @@ void MenuButton::update(void) {
 
 void MenuButton::cleanup(void) {
   SdlGameObject::cleanup();
+}
+
+void MenuButton::setCallback(void (*pCallback)(void)) {
+  mCallback = pCallback;
+}
+
+int MenuButton::getCallbackId(void) {
+  return mCallbackId;
 }
 

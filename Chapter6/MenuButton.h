@@ -1,18 +1,24 @@
 #ifndef MENU_BUTTON_H
 #define MENU_BUTTON_H
 
+#include "BaseCreator.h"
+#include "GameObject.h"
 #include "LoaderParams.h"
 #include "SdlGameObject.h"
 
 class MenuButton : public SdlGameObject {
   public:
-    MenuButton(const LoaderParams *pParams, void (*pCallback)(void));
-    virtual void draw(void);
-    virtual void update(void);
-    virtual void cleanup(void);
+    MenuButton(void);
+    void load(const LoaderParams *pParams);
+    void draw(void);
+    void update(void);
+    void cleanup(void);
+    void setCallback(void (*pCallback)(void));
+    int getCallbackId(void);
 
   private:
     void (*mCallback)(void);
+    bool mCallbackId;
     bool mRunCallback;
     bool mWasClicked;
     bool mWasOutOfBounds;
@@ -22,6 +28,12 @@ class MenuButton : public SdlGameObject {
       MOUSE_OVER = 1,
       CLICKED = 2
     };
+};
+
+class MenuButtonCreator : public BaseCreator {
+  GameObject *createGameObject(void) const {
+    return new MenuButton();
+  }
 };
 
 #endif // MENU_BUTTON_H

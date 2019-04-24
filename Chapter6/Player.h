@@ -1,12 +1,15 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include "BaseCreator.h"
+#include "GameObject.h"
 #include "SdlGameObject.h"
 #include "LoaderParams.h"
 
 class Player : public SdlGameObject {
   public:
-    Player(const LoaderParams *pParams);
+    Player(void);
+    void load(const LoaderParams *pParams);
     void draw(void);
     void update(void);
     void cleanup(void);
@@ -15,6 +18,12 @@ class Player : public SdlGameObject {
   private:
     int mAnimationFrames;
     int mTargetApproachSpeed;
+};
+
+class PlayerCreator : public BaseCreator {
+  GameObject *createGameObject(void) const {
+    return new Player();
+  }
 };
 
 #endif // PLAYER_H

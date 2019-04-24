@@ -1,12 +1,15 @@
 #ifndef DEMO_PLAYER_H
 #define DEMO_PLAYER_H
 
+#include "BaseCreator.h"
+#include "GameObject.h"
 #include "SdlGameObject.h"
 #include "LoaderParams.h"
 
 class DemoPlayer : public SdlGameObject {
   public:
-    DemoPlayer(const LoaderParams *pParams);
+    DemoPlayer(void);
+    void load(const LoaderParams *pParams);
     void draw(void);
     void update(void);
     void cleanup(void);
@@ -19,6 +22,12 @@ class DemoPlayer : public SdlGameObject {
     int mJoypadId;
     Vector2D mTarget;
     int mTargetApproachSpeed;
+};
+
+class DemoPlayerCreator : public BaseCreator {
+  GameObject *createGameObject(void) const {
+    return new DemoPlayer();
+  }
 };
 
 #endif // DEMO_PLAYER_H

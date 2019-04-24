@@ -1,0 +1,106 @@
+<?xml version="1.0" ?>
+<states>
+  <menu>
+    <textures>
+      <texture id="exit_button" filename="exit_button.png" />
+      <texture id="menu_background" filename="background.png" />
+      <texture id="play_button" filename="play_button.png" />
+    </textures>
+    <objects>
+      <object type="DemoBackground" texture_id="menu_background" width="256" height="256" max_intensity="255"/>
+      <object type="MenuButton" texture_id="play_button" x="100" y="100" width="400" height="100" animation_frames="0" callback_id="0"/>
+      <object type="MenuButton" texture_id="exit_button" x="100" y="300" width="400" height="100" animation_frames="0" callback_id="1"/>
+    </objects>
+  </menu>
+  <play>
+    <textures>
+      <texture id="enemy" filename="helicopter1.png"/>
+      <texture id="play_background" filename="background.png" />
+      <texture id="player" filename="helicopter0.png"/>
+    </textures>
+    <objects>
+      <object type="DemoBackground" texture_id="play_background" width="256" height="256" max_intensity="255"/>
+      <object type="Player" texture_id="player" x="256" y="212" width="128" height="55" animation_frames="4"/>
+      <object type="Enemy" texture_id="enemy" x="256" y="12" width="128" height="55" animation_frames="4"/>
+    </objects>
+  </play>
+  <pause>
+    <textures>
+      <texture id="main_menu_button" filename="main_menu_button.png"/>
+      <texture id="pause_background" filename="background.png" />
+      <texture id="resume_button" filename="resume_button.png"/>
+    </textures>
+    <objects>
+      <object type="DemoBackground" texture_id="pause_background" width="256" height="256" max_intensity="255"/>
+      <object type="MenuButton" texture_id="main_menu_button" x="220" y="120" width="200" height="80" animation_frames="0" callback_id="0"/>
+      <object type="MenuButton" texture_id="resume_button" x="220" y="280" width="200" height="80" animation_frames="0" callback_id="1"/>
+    </objects>
+  </pause>
+  <gameover>
+    <textures>
+      <texture id="gameover_background" filename="background.png" />
+      <texture id="gameover_label" filename="gameover.png"/>
+      <texture id="main_menu_button" filename="main_menu_button.png"/>
+      <texture id="restart_button" filename="restart_button.png"/>
+    </textures>
+    <objects>
+      <object type="DemoBackground" texture_id="gameover_background" width="256" height="256" max_intensity="96"/>
+      <object type="AnimatedGameObject" texture_id="gameover_label" x="225" y="105" width="190" height="30" animation_frames="2" animation_speed="2"/>
+      <object type="MenuButton" texture_id="main_menu_button" x="220" y="200" width="200" height="80" animation_frames="0" callback_id="0"/>
+      <object type="MenuButton" texture_id="restart_button" x="220" y="320" width="200" height="80" animation_frames="0" callback_id="1"/>
+    </objects>
+  </gameover>
+  <demo>
+    <textures>
+      <texture id="demo_critter" filename="animate.png" />
+      <texture id="demo_background" filename="background.png" />
+    </textures>
+    <objects>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-224" y="-161" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-64" y="-161" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="96" y="-161" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="256" y="-161" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="416" y="-161" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="576" y="-161" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-224" y="-41" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-64" y="-41" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="96" y="-41" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="256" y="-41" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="416" y="-41" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="576" y="-41" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-224" y="79" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-64" y="79" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="96" y="79" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="256" y="79" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="416" y="79" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="576" y="79" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-224" y="199" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-64" y="199" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="96" y="199" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="256" y="199" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="416" y="199" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="576" y="199" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-224" y="319" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-64" y="319" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="96" y="319" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="256" y="319" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="416" y="319" width="128" height="82" animation_frames="6" x_flip="false" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="576" y="319" width="128" height="82" animation_frames="6" x_flip="true" y_flip="true"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-224" y="439" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="-64" y="439" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="96" y="439" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="256" y="439" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="416" y="439" width="128" height="82" animation_frames="6" x_flip="false" y_flip="false"/>
+      <object type="DemoBackgroundObject" texture_id="demo_critter" x="576" y="439" width="128" height="82" animation_frames="6" x_flip="true" y_flip="false"/>
+      <object type="DemoBackground" texture_id="demo_critter" width="256" height="256" max_intensity="255"/>
+      <object type="DemoBackground" texture_id="demo_background" width="256" height="256" max_intensity="255"/>
+      <object type="DemoGameObject" texture_id="demo_critter" x="256" y="199" width="128" height="82" animation_frames="6"/>
+      <object type="DemoPlayer" texture_id="demo_critter" x="256" y="-41" width="128" height="82" scale="1.5" animation_frames="6"/>
+      <object type="DemoPlayer" texture_id="demo_critter" x="256" y="79" width="128" height="82" scale="1.5" animation_frames="6"/>
+      <object type="DemoPlayer" texture_id="demo_critter" x="256" y="199" width="128" height="82" scale="1.5" animation_frames="6"/>
+      <object type="DemoPlayer" texture_id="demo_critter" x="256" y="319" width="128" height="82" scale="1.5" animation_frames="6"/>
+      <object type="DemoPlayer" texture_id="demo_critter" x="256" y="439" width="128" height="82" scale="1.5" animation_frames="6"/>
+    </objects>
+  </demo>
+</states>
+

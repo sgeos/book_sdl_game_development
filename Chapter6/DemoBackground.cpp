@@ -7,15 +7,16 @@
 #include "LoaderParams.h"
 #include "TextureManager.h"
 
-DemoBackground::DemoBackground(const LoaderParams *pParams, int pMaxIntensity) : mMaxIntensity(pMaxIntensity) {
+DemoBackground::DemoBackground(int pMaxIntensity) : mTextureId(""), mTileWidth(0), mTileHeight(0), mMaxIntensity(pMaxIntensity) {
+  // set mAnimationCounter, mXOffset, mYOffset, mRed, mGreen, mBlue, mAlpha
+  update();
+}
+
+void DemoBackground::load(const LoaderParams *pParams) {
   mTextureId = pParams->getTextureId();
-  mXOffset = pParams->getX();
-  mYOffset = pParams->getY();
   mTileWidth = pParams->getWidth();
   mTileHeight = pParams->getHeight();
-  mAnimationCounter = Game::Instance()->getFrame() - 1;
-  // set mRed, mGreen, mBlue, mAlpha
-  update();
+  mMaxIntensity = pParams->getMaxIntensity();
 }
 
 void DemoBackground::draw(void) {
@@ -34,7 +35,6 @@ void DemoBackground::draw(void) {
 
 void DemoBackground::update(void) {
   mAnimationCounter = Game::Instance()->getFrame();
-  //mAnimationCounter++;
   int framesPerCycle = 2.5 * Constants::FramesPerSecond();
   int hue = mAnimationCounter / framesPerCycle % 6;
   int intensity = mMaxIntensity * abs(cos((float)mAnimationCounter / (2 * framesPerCycle) * M_PI));

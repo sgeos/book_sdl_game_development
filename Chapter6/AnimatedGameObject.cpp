@@ -7,12 +7,17 @@
 #include "SdlGameObject.h"
 #include "TextureManager.h"
 
-AnimatedGameObject::AnimatedGameObject(const LoaderParams *pParams, int pAnimationSpeed) :
-  SdlGameObject(pParams),
-  mAnimationSpeed(pAnimationSpeed)
+AnimatedGameObject::AnimatedGameObject(void) : SdlGameObject(), mAnimationSpeed(1), mAnimationFrames(1) { }
+
+void AnimatedGameObject::load(const LoaderParams *pParams)
 {
-  TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-  mAnimationFrames /= mWidth;
+  SdlGameObject::load(pParams);
+  mAnimationSpeed = pParams->getAnimationSpeed();
+  mAnimationFrames = pParams->getAnimationFrames();
+  if (0 == mAnimationFrames) {
+    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
+    mAnimationFrames /= mWidth;
+  }
 }
 
 void AnimatedGameObject::draw(void) {

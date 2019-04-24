@@ -6,9 +6,14 @@
 #include "SdlGameObject.h"
 #include "TextureManager.h"
 
-DemoGameObject::DemoGameObject(const LoaderParams *pParams) : SdlGameObject(pParams) {
-  TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-  mAnimationFrames /= mWidth;
+DemoGameObject::DemoGameObject(void) { }
+
+void DemoGameObject::load(const LoaderParams *pParams) {
+  SdlGameObject::load(pParams);
+  if (0 == mAnimationFrames) {
+    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
+    mAnimationFrames /= mWidth;
+  }
 }
 
 void DemoGameObject::draw(void) {

@@ -10,10 +10,15 @@ LoaderParams::LoaderParams(
   int pHeight,
   double pScale,
   double pRotation,
-  SDL_RendererFlip pFlip,
+  bool pXFlip,
+  bool pYFlip,
   int pAnimationCounter,
   int pAnimationFrame,
-  int pAnimationRow
+  int pAnimationRow,
+  int pAnimationSpeed,
+  int pAnimationFrames,
+  int pMaxIntensity,
+  int pCallbackId
 ) :
   mTextureId(pTextureId),
   mX(pX),
@@ -22,10 +27,14 @@ LoaderParams::LoaderParams(
   mHeight(pHeight),
   mScale(pScale),
   mRotation(pRotation),
-  mFlip(pFlip),
+  mFlip((SDL_RendererFlip)((pXFlip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) | (pYFlip ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE))),
   mAnimationCounter(pAnimationCounter),
   mAnimationFrame(pAnimationFrame),
-  mAnimationRow(pAnimationRow)
+  mAnimationRow(pAnimationRow),
+  mAnimationSpeed(pAnimationSpeed),
+  mAnimationFrames(pAnimationFrames),
+  mMaxIntensity(pMaxIntensity),
+  mCallbackId(pCallbackId)
 { }
 
 std::string LoaderParams::getTextureId() const {
@@ -70,5 +79,21 @@ int LoaderParams::getAnimationFrame(void) const {
 
 int LoaderParams::getAnimationRow(void) const {
   return mAnimationRow;
+}
+
+int LoaderParams::getAnimationSpeed(void) const {
+  return mAnimationSpeed;
+}
+
+int LoaderParams::getAnimationFrames(void) const {
+  return mAnimationFrames;
+}
+
+int LoaderParams::getMaxIntensity(void) const {
+  return mMaxIntensity;
+}
+
+int LoaderParams::getCallbackId(void) const {
+  return mCallbackId;
 }
 

@@ -5,7 +5,11 @@
 #include "DemoBackgroundObject.h"
 #include "SdlGameObject.h"
 
-DemoBackgroundObject::DemoBackgroundObject(const LoaderParams *pParams) : SdlGameObject(pParams) { }
+DemoBackgroundObject::DemoBackgroundObject(void) { }
+
+void DemoBackgroundObject::load(const LoaderParams *pParams) {
+  SdlGameObject::load(pParams);
+}
 
 void DemoBackgroundObject::draw(void) {
   SdlGameObject::draw();

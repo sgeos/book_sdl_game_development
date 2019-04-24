@@ -1,10 +1,12 @@
-#ifndef PAUSE_STATE_H
-#define PAUSE_STATE_H
+#ifndef MAIN_MENU_STATE_H
+#define MAIN_MENU_STATE_H
 
 #include <string>
+#include <vector>
+#include "GameObject.h"
 #include "MenuState.h"
 
-class PauseState : public MenuState {
+class MainMenuState : public MenuState {
   public:
     virtual void update(void);
     virtual void render(void);
@@ -12,12 +14,12 @@ class PauseState : public MenuState {
     virtual std::string getStateId(void) const { return sStateId; }
 
   private:
+    static GameState *sTransitionState;
     static const std::string sStateId;
 
-    static GameState *sTransitionState;
-    static void sPauseToMain();
-    static void sResumePlay();
+    static void sMenuToPlay(void);
+    static void sExitMenu(void);
 };
 
-#endif // PAUSE_STATE_H
+#endif // MAIN_MENU_STATE_H
 

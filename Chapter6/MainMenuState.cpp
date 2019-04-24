@@ -1,23 +1,20 @@
 #include <iostream>
 #include <string>
-#include "AnimatedGameObject.h"
 #include "Constants.h"
 #include "DemoBackground.h"
 #include "Game.h"
-#include "GameOverState.h"
 #include "GameStateMachine.h"
-#include "InputHandler.h"
+#include "PlayState.h"
 #include "MenuButton.h"
 #include "MainMenuState.h"
-#include "PlayState.h"
 #include "StateParser.h"
 #include "TextureManager.h"
 
-const std::string GameOverState::sStateId = "gameover";
+const std::string MainMenuState::sStateId = "menu";
 
-GameState *GameOverState::sTransitionState = nullptr;
+GameState *MainMenuState::sTransitionState = nullptr;
 
-void GameOverState::update(void) {
+void MainMenuState::update(void) {
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->update();
   }
@@ -26,28 +23,29 @@ void GameOverState::update(void) {
   }
 }
 
-void GameOverState::render(void) {
+void MainMenuState::render(void) {
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->draw();
   }
 }
 
-bool GameOverState::onEnter(void) {
+bool MainMenuState::onEnter(void) {
   sTransitionState = nullptr;
   StateParser stateParser;
   stateParser.parseState("demo.xml", sStateId, &mGameObjectList, &mTextureIdList);
-  mCallbackList.push_back(sGameOverToMain);
-  mCallbackList.push_back(sRestartPlay);
+  mCallbackList.push_back(sMenuToPlay);
+  mCallbackList.push_back(sExitMenu);
   setCallbacks();
   std::cout << "Entering state \"" << sStateId << "\"." << std::endl;
   return true;
 }
 
-void GameOverState::sGameOverToMain() {
-  sTransitionState = new MainMenuState();
+void MainMenuState::sMenuToPlay(void) {
+  sTransitionState = new PlayState();
 }
 
-void GameOverState::sRestartPlay() {
-  sTransitionState = new PlayState();
+void MainMenuState::sExitMenu(void) {
+  Game::Instance()->getStateMachine()->popState();
+  //Game::Instance()->quit();
 }
 
