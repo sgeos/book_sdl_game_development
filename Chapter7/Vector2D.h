@@ -5,7 +5,7 @@
 
 class Vector2D {
   public:
-    Vector2D(float pX, float pY) : mX(pX), mY(pY) { }
+    Vector2D(float pX = 0.0f, float pY = 0.0f) : mX(pX), mY(pY) { }
     float getX(void) const { return mX; }
     float getY(void) const { return mY; }
     void setX(float pX) { mX = pX; }

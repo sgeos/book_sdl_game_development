@@ -39,3 +39,8 @@
 *.app
 bin/*
 
+# zlib
+zlib-1.2.11/example
+zlib-1.2.11/minigzip
+zlib-1.2.11/configure.log
+

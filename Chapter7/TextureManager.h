@@ -36,6 +36,17 @@ class TextureManager {
       double pRotation = 0.0,
       SDL_RendererFlip pFlip = SDL_FLIP_NONE
     );
+    void drawTile(
+      std::string pId,
+      int pMargin,
+      int pSpacing,
+      int pPositionX,
+      int pPositionY,
+      int pWidth,
+      int pHeight,
+      int pRow,
+      int pFrame
+    );
     int queryTexture(std::string pId, Uint32 *pFormat, int *pAccess, int *pWidth, int *pHeight);
 
   private:

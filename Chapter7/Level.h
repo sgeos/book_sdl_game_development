@@ -19,7 +19,6 @@ struct Tileset {
 
 class Level {
   public:
-    Level(void);
     ~Level(void);
     void render(void);
     void update(void);
@@ -27,6 +26,8 @@ class Level {
     std::vector<Layer *> *getLayerList(void);
 
   private:
+    friend class LevelParser;
+    Level(void);
     std::vector<Tileset> mTilesetList;
     std::vector<Layer *> mLayerList;
 };

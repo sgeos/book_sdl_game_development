@@ -64,6 +64,28 @@ void TextureManager::drawFrame(
   SDL_RenderCopyEx(renderer, mTextureMap[pId], &sourceRectangle, &destinationRectangle, pRotation, nullptr, pFlip);
 }
 
+void TextureManager::drawTile(
+  std::string pId,
+  int pMargin,
+  int pSpacing,
+  int pPositionX,
+  int pPositionY,
+  int pWidth,
+  int pHeight,
+  int pRow,
+  int pFrame
+) {
+  SDL_Renderer *renderer = Game::Instance()->getRenderer();
+  SDL_Rect source, destination;
+  source.x = pMargin + (pSpacing + pWidth) * pFrame;
+  source.y = pMargin + (pSpacing + pHeight) * pRow;
+  destination.x = pPositionX;
+  destination.y = pPositionY;
+  source.w = destination.w = pWidth;
+  source.h = destination.h = pHeight;
+  SDL_RenderCopyEx(renderer, mTextureMap[pId], &source, &destination, 0, 0, SDL_FLIP_NONE);
+}
+
 int TextureManager::queryTexture(std::string pId, Uint32 *pFormat, int *pAccess, int *pWidth, int *pHeight) {
   return SDL_QueryTexture(mTextureMap[pId], pFormat, pAccess, pWidth, pHeight);
 }

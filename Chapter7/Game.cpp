@@ -147,6 +147,14 @@ SDL_Renderer *Game::getRenderer(void) {
   return mRenderer;
 }
 
+int Game::getWidth(void) {
+  return Constants::WindowWidth();
+}
+
+int Game::getHeight(void) {
+  return Constants::WindowHeight();
+}
+
 void Game::quit(void) {
   mDone = true;
 }

@@ -26,6 +26,8 @@ class Game {
     int getFrame(void);
     SDL_Renderer *getRenderer(void);
     GameStateMachine *getStateMachine(void);
+    int getWidth(void);
+    int getHeight(void);
     void quit(void);
     bool isDone(void);
     bool isError(void);
