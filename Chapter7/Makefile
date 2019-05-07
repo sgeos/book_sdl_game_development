@@ -11,7 +11,7 @@ EXE = ../bin/Chapter7
 .PHONY: all
 all: $(EXE)
 
-$(EXE): main.o tinystr.o tinyxml.o tinyxmlerror.o tinyxmlparser.o AnimatedGameObject.o Constants.o DemoBackground.o DemoBackgroundObject.o DemoGameObject.o DemoPlayer.o DemoState.o Enemy.o Game.o GameObjectFactory.o GameOverState.o GameStateMachine.o InputHandler.o LoaderParams.o Log.o MainMenuState.o MenuButton.o MenuState.o PauseState.o Player.o PlayState.o SdlGameObject.o StateParser.o TextureManager.o
+$(EXE): main.o tinystr.o tinyxml.o tinyxmlerror.o tinyxmlparser.o AnimatedGameObject.o Constants.o DemoBackground.o DemoBackgroundObject.o DemoGameObject.o DemoPlayer.o DemoState.o Enemy.o Game.o GameObjectFactory.o GameOverState.o GameStateMachine.o InputHandler.o Level.o LoaderParams.o Log.o MainMenuState.o MenuButton.o MenuState.o PauseState.o Player.o PlayState.o SdlGameObject.o StateParser.o TextureManager.o
 	mkdir -p $$(dirname $@)
 	$(CXX) $(LDFLAGS) $^ -o $@
 
