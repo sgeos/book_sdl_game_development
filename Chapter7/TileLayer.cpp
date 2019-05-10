@@ -47,7 +47,6 @@ void TileLayer::render(void) {
 
 void TileLayer::update(void) {
   mPosition += mVelocity;
-  mVelocity.setX(1);
 }
 
 void TileLayer::setTileIds(const std::vector<std::vector<int>> &pTileIdList) {

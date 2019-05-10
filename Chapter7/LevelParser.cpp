@@ -26,7 +26,7 @@ Level *LevelParser::parseLevel(const char *pFilename) {
     }
   }
   for (TiXmlElement *e = root->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
-    if (std::string("property") == e->Value()) {
+    if (std::string("properties") == e->Value()) {
       parseTextureList(e);
     }
   }
@@ -93,9 +93,13 @@ void LevelParser::parseTileLayer(TiXmlElement *pTileElement, std::vector<Layer *
 }
 
 void LevelParser::parseTextureList(TiXmlElement *pTextureRoot) {
-  std::cout << "Adding texture " << pTextureRoot->Attribute("value") << " with ID " << pTextureRoot->Attribute("name") << std::endl;
   const std::string resourcePath = Constants::ResourcePath("");
-  TextureManager::Instance()->load(pTextureRoot->Attribute("name"), resourcePath + pTextureRoot->Attribute("value"));
+  for (TiXmlElement *e = pTextureRoot->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
+    if (std::string("property") == e->Value()) {
+      std::cout << "Adding texture " << e->Attribute("value") << " with ID " << e->Attribute("name") << std::endl;
+      TextureManager::Instance()->load(e->Attribute("name"), resourcePath + e->Attribute("value"));
+    }
+  }
 }
 
 void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Layer *> *pLayerList) {
@@ -122,7 +126,7 @@ void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Lay
         int animationFrame = 0;
         int animationRow = 0;
         int animationSpeed = 1;
-        int animationFrames = 1;
+        int animationFrames = 0;
         int maxIntensity = 255;
         int callbackId = 0;
         e->Attribute("x", &x);

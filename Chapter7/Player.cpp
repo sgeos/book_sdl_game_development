@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <cmath>
 #include <SDL2/SDL.h>
 
@@ -7,7 +9,7 @@
 #include "SdlGameObject.h"
 #include "TextureManager.h"
 
-Player::Player(void) : mAnimationFrames(1), mTargetApproachSpeed(6) { }
+Player::Player(void) : mAnimationFrames(0), mTargetApproachSpeed(6) { }
 
 void Player::load(const LoaderParams *pParams) {
   SdlGameObject::load(pParams);

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="50">
+ <properties>
+  <property name="player" value="helicopter0.png"/>
+  <property name="stage_background" value="background.png"/>
+ </properties>
+ <tileset firstgid="1" name="blocks1" tilewidth="32" tileheight="32" spacing="2" margin="2" tilecount="198" columns="18">
+  <image source="blocks1.png" width="614" height="376"/>
+ </tileset>
+ <tileset firstgid="199" name="blocks2" tilewidth="32" tileheight="32" spacing="2" margin="2" tilecount="198" columns="18">
+  <image source="blocks2.png" width="614" height="376"/>
+ </tileset>
+ <objectgroup id="1" name="Object Layer 2">
+  <object id="1" name="stage_background" type="DemoBackground" x="0" y="0" width="32" height="32">
+   <properties>
+    <property name="height" value="256"/>
+    <property name="max_intensity" type="int" value="192"/>
+    <property name="texture_id" value="stage_background"/>
+    <property name="width" value="256"/>
+   </properties>
+  </object>
+ </objectgroup>
+ <layer id="6" name="Collision" width="20" height="15">
+  <properties>
+   <property name="collidable" value=""/>
+  </properties>
+  <data encoding="base64" compression="zlib">
+   eJztjksKgDAQQysIXsC/3v9a/g/gF5em0EKYRUHrSgw8mhmaIUr9+pIa0ILupXszWMD60j2tMHie7cEARtqlHvc2sIODdj79tCKRv9svBwUozevCpYl8bEh0H5AZ5I51OnpxTnqe7f9K+NrMMs9d2Ns/FwbiEfU=
+  </data>
+ </layer>
+ <objectgroup color="#00ff00" id="3" name="Object Layer 1">
+  <object id="2" name="player" type="Player" x="256" y="212" width="32" height="32">
+   <properties>
+    <property name="animation_frames" value="5"/>
+    <property name="height" value="55"/>
+    <property name="texture_id" value="player"/>
+    <property name="width" value="128"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>

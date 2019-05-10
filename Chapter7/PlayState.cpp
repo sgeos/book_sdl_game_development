@@ -37,7 +37,7 @@ void PlayState::render(void) {
 
 bool PlayState::onEnter(void) {
   LevelParser levelParser;
-  mLevel = levelParser.parseLevel("alien_map1.tmx");
+  mLevel = levelParser.parseLevel("test_map1.tmx");
   std::cout << "Entering state \"" << sStateId << "\"." << std::endl;
   return true;
 }
