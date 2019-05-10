@@ -15,6 +15,7 @@
 const std::string PlayState::sStateId = "play";
 
 void PlayState::update(void) {
+  mLevel->update();
   for (std::vector<GameObject *>::size_type i = 0; i < mGameObjectList.size(); i++) {
     mGameObjectList[i]->update();
   }

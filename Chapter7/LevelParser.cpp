@@ -2,8 +2,10 @@
 #include "base64.h"
 #include "Constants.h"
 #include "Game.h"
+#include "GameObjectFactory.h"
 #include "Level.h"
 #include "LevelParser.h"
+#include "ObjectLayer.h"
 #include "TextureManager.h"
 #include "TileLayer.h"
 #include "tinyxml.h"
@@ -21,6 +23,16 @@ Level *LevelParser::parseLevel(const char *pFilename) {
   for (TiXmlElement *e = root->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
     if (std::string("tileset") == e->Value()) {
       parseTilesetList(e, level->getTilesetList());
+    }
+  }
+  for (TiXmlElement *e = root->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
+    if (std::string("property") == e->Value()) {
+      parseTextureList(e);
+    }
+  }
+  for (TiXmlElement *e = root->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
+    if (std::string("objectgroup") == e->Value()) {
+      parseObjectLayer(e, level->getLayerList());
     }
   }
   for (TiXmlElement *e = root->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
@@ -46,6 +58,7 @@ void LevelParser::parseTilesetList(TiXmlElement *pTilesetRoot, std::vector<Tiles
   tileset.name = pTilesetRoot->Attribute("name");
   tileset.columnCount = tileset.width / (tileset.tileWidth + tileset.spacing);
   pTilesetList->push_back(tileset);
+  std::cout << "Adding tileset " << imageElement->Attribute("source") << " with ID " << pTilesetRoot->Attribute("name") << std::endl;
 }
 
 void LevelParser::parseTileLayer(TiXmlElement *pTileElement, std::vector<Layer *> *pLayerList, const std::vector<Tileset> *pTileSetList) {
@@ -77,5 +90,102 @@ void LevelParser::parseTileLayer(TiXmlElement *pTileElement, std::vector<Layer *
   }
   tileLayer->setTileIds(tileData);
   pLayerList->push_back(tileLayer);
+}
+
+void LevelParser::parseTextureList(TiXmlElement *pTextureRoot) {
+  std::cout << "Adding texture " << pTextureRoot->Attribute("value") << " with ID " << pTextureRoot->Attribute("name") << std::endl;
+  const std::string resourcePath = Constants::ResourcePath("");
+  TextureManager::Instance()->load(pTextureRoot->Attribute("name"), resourcePath + pTextureRoot->Attribute("value"));
+}
+
+void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Layer *> *pLayerList) {
+  ObjectLayer* objectLayer = new ObjectLayer();
+  for (TiXmlElement *e = pObjectElement->FirstChildElement(); nullptr != e; e = e->NextSiblingElement()) {
+    std::cout << e->Value() << std::endl;
+    if (std::string("object") == e->Value()) {
+      std::string type = e->Attribute("type");
+      GameObject *gameObject = GameObjectFactory::Instance()->create(type);
+      if (nullptr == gameObject) {
+        std::cout << "Failed to create game object: " << e->Attribute("type") << std::endl;
+      } else {
+        std::cout << "Creating game object: " << e->Attribute("type") << std::endl;
+        std::string textureId;
+        int x = 0;
+        int y = 0;
+        int width = 0;
+        int height = 0;
+        double scale = 1.0;
+        double rotation = 0.0;
+        bool xFlip = false;
+        bool yFlip = false;
+        int animationCounter = 0;
+        int animationFrame = 0;
+        int animationRow = 0;
+        int animationSpeed = 1;
+        int animationFrames = 1;
+        int maxIntensity = 255;
+        int callbackId = 0;
+        e->Attribute("x", &x);
+        e->Attribute("y", &y);
+        for (TiXmlElement* properties = e->FirstChildElement(); nullptr != properties; properties = properties->NextSiblingElement()) {
+          if (std::string("properties") == properties->Value()) {
+            for (TiXmlElement* property = properties->FirstChildElement(); nullptr != property; property = property->NextSiblingElement()) {
+              if (std::string("texture_id") == property->Attribute("name")) {
+                textureId = property->Attribute("value");
+              } else if (std::string("width") == property->Attribute("name")) {
+                property->Attribute("value", &width);
+              } else if (std::string("height") == property->Attribute("name")) {
+                property->Attribute("value", &height);
+              } else if (std::string("scale") == property->Attribute("name")) {
+                property->Attribute("value", &scale);
+              } else if (std::string("rotation") == property->Attribute("name")) {
+                property->Attribute("value", &rotation);
+              } else if (std::string("x_flip") == property->Attribute("name") && nullptr != property->Attribute("value")) {
+                xFlip = 0 == std::string("true").compare(property->Attribute("value"));
+              } else if (std::string("y_flip") == property->Attribute("name") && nullptr != property->Attribute("value")) {
+                yFlip = 0 == std::string("true").compare(property->Attribute("value"));
+              } else if (std::string("animation_counter") == property->Attribute("name")) {
+                property->Attribute("value", &animationCounter);
+              } else if (std::string("animation_frame") == property->Attribute("name")) {
+                property->Attribute("value", &animationFrame);
+              } else if (std::string("animation_row") == property->Attribute("name")) {
+                property->Attribute("value", &animationRow);
+              } else if (std::string("animation_speed") == property->Attribute("name")) {
+                property->Attribute("value", &animationSpeed);
+              } else if (std::string("animation_frames") == property->Attribute("name")) {
+                property->Attribute("value", &animationFrames);
+              } else if (std::string("max_intensity") == property->Attribute("name")) {
+                property->Attribute("value", &maxIntensity);
+              } else if (std::string("callback_id") == property->Attribute("name")) {
+                property->Attribute("value", &callbackId);
+              }
+            }
+          }
+        }
+        gameObject->load(
+          new LoaderParams(
+            textureId,
+            x,
+            y,
+            width,
+            height,
+            scale,
+            rotation,
+            xFlip,
+            yFlip,
+            animationCounter,
+            animationFrame,
+            animationRow,
+            animationSpeed,
+            animationFrames,
+            maxIntensity,
+            callbackId
+          )
+        );
+        objectLayer->getGameObjectList()->push_back(gameObject);
+      }
+    }
+  }
+  pLayerList->push_back(objectLayer);
 }
 

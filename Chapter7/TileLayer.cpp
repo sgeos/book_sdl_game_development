@@ -20,9 +20,11 @@ void TileLayer::render(void) {
   int yIndex = mPosition.getY() / mTileSize;
   int xOffset = int(mPosition.getX()) % mTileSize;
   int yOffset = int(mPosition.getY()) % mTileSize;
-  for (int i = 0; i < mRowCount; i++) {
-    for (int j = 0; j < mColumnCount; j++) {
-      int id = mTileIdList[i + yIndex][j + xIndex];
+  int rowMax = mRowCount + 1;
+  int columnMax = mColumnCount + 1;
+  for (int i = 0; i < rowMax; i++) {
+    for (int j = 0; j < columnMax; j++) {
+      int id = getTileIdByPosition(j + xIndex, i + yIndex);
       if (0 == id) {
         continue;
       }
@@ -45,6 +47,7 @@ void TileLayer::render(void) {
 
 void TileLayer::update(void) {
   mPosition += mVelocity;
+  mVelocity.setX(1);
 }
 
 void TileLayer::setTileIds(const std::vector<std::vector<int>> &pTileIdList) {
@@ -53,6 +56,15 @@ void TileLayer::setTileIds(const std::vector<std::vector<int>> &pTileIdList) {
 
 void TileLayer::setTileSize(int pTileSize) {
   mTileSize = pTileSize;
+}
+
+int TileLayer::getTileIdByPosition(int pXIndex, int pYIndex) {
+  int xIndexMax = mTileIdList[0].size();
+  int yIndexMax = mTileIdList.size();
+  if ((pXIndex < 0) || (xIndexMax <= pXIndex) || (pYIndex < 0) || (yIndexMax <= pYIndex)) {
+    return 0;
+  }
+  return mTileIdList[pYIndex][pXIndex];
 }
 
 Tileset TileLayer::getTilesetById(int pTileId) {

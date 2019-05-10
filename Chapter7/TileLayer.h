@@ -13,6 +13,7 @@ class TileLayer : public Layer {
     virtual void update(void);
     void setTileIds(const std::vector<std::vector<int>> &pTileIdList);
     void setTileSize(int pTileSize);
+    int getTileIdByPosition(int pXIndex, int pYIndex);
     Tileset getTilesetById(int pTileId);
 
   private:
