@@ -3,20 +3,22 @@
 
 #include "BaseCreator.h"
 #include "GameObject.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 #include "LoaderParams.h"
 
-class Player : public SdlGameObject {
+class Player : public ShooterObject {
   public:
     Player(void);
-    void load(const LoaderParams *pParams);
-    void draw(void);
-    void update(void);
-    void cleanup(void);
+    virtual ~Player();
+    virtual void load(const std::unique_ptr<LoaderParams> &pParams);
+    virtual void draw(void);
+    virtual void update(void);
+    virtual void cleanup(void);
+    virtual void collision(void);
+    virtual std::string type(void) { return "Player"; }
     void handleInput(void);
 
-  private:
-    int mAnimationFrames;
+  protected:
     int mTargetApproachSpeed;
 };
 

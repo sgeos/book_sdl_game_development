@@ -55,41 +55,46 @@ void StateParser::parseObjects(TiXmlElement *pStateRoot, std::vector<GameObject 
     e->Attribute("scale", &scale);
     double rotation = 0.0;
     e->Attribute("rotation", &rotation);
+    double alpha = 1.0;
+    e->Attribute("alpha", &alpha);
     bool xFlip = nullptr != e->Attribute("x_flip") && 0 == std::string("true").compare(e->Attribute("x_flip"));
     bool yFlip = nullptr != e->Attribute("y_flip") && 0 == std::string("true").compare(e->Attribute("y_flip"));
-    int animationCounter = 0;
-    e->Attribute("animation_counter", &animationCounter);
-    int animationFrame = 0;
-    e->Attribute("animation_frame", &animationFrame);
     int animationRow = 0;
     e->Attribute("animation_row", &animationRow);
+    int animationFrame = 0;
+    e->Attribute("animation_frame", &animationFrame);
+    int animationFrameCount = 1;
+    e->Attribute("animation_frame_count", &animationFrameCount);
+    int animationCounter = 0;
+    e->Attribute("animation_counter", &animationCounter);
     int animationSpeed = 1;
     e->Attribute("animation_speed", &animationSpeed);
-    int animationFrames = 1;
-    e->Attribute("animation_frames", &animationFrames);
     int maxIntensity = 255;
     e->Attribute("max_intensity", &maxIntensity);
     int callbackId = 0;
     e->Attribute("callback_id", &callbackId);
     GameObject *gameObject = GameObjectFactory::Instance()->create(type);
     gameObject->load(
-      new LoaderParams(
-        textureId,
-        x,
-        y,
-        width,
-        height,
-        scale,
-        rotation,
-        xFlip,
-        yFlip,
-        animationCounter,
-        animationFrame,
-        animationRow,
-        animationSpeed,
-        animationFrames,
-        maxIntensity,
-        callbackId
+      std::unique_ptr<LoaderParams>(
+        new LoaderParams(
+          textureId,
+          x,
+          y,
+          width,
+          height,
+          scale,
+          rotation,
+          alpha,
+          xFlip,
+          yFlip,
+          animationRow,
+          animationFrame,
+          animationFrameCount,
+          animationCounter,
+          animationSpeed,
+          maxIntensity,
+          callbackId
+        )
       )
     );
     pObjectList->push_back(gameObject);

@@ -3,23 +3,27 @@
 #include <SDL2/SDL.h>
 #include "Constants.h"
 #include "DemoBackgroundObject.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 
-DemoBackgroundObject::DemoBackgroundObject(void) { }
+DemoBackgroundObject::DemoBackgroundObject(void) : ShooterObject() { }
 
-void DemoBackgroundObject::load(const LoaderParams *pParams) {
-  SdlGameObject::load(pParams);
+DemoBackgroundObject::~DemoBackgroundObject(void) { }
+
+void DemoBackgroundObject::load(const std::unique_ptr<LoaderParams> &pParams) {
+  ShooterObject::load(pParams);
 }
 
 void DemoBackgroundObject::draw(void) {
-  SdlGameObject::draw();
+  ShooterObject::draw();
 }
 
 void DemoBackgroundObject::update(void) {
-  SdlGameObject::update();
+  ShooterObject::update();
   mVelocity.setX(5.0 * cos(M_PI * (double)mAnimationCounter / (double)Constants::FramesPerSecond()));
   mVelocity.setY(5.0 * sin(M_PI * (double)mAnimationCounter / (double)Constants::FramesPerSecond()));
 }
 
 void DemoBackgroundObject::cleanup(void) { }
+
+void DemoBackgroundObject::collision(void) { }
 

@@ -7,12 +7,12 @@
 #include "LoaderParams.h"
 #include "TextureManager.h"
 
-DemoBackground::DemoBackground(int pMaxIntensity) : mTextureId(""), mTileWidth(0), mTileHeight(0), mMaxIntensity(pMaxIntensity) {
+DemoBackground::DemoBackground(int pMaxIntensity) : GameObject(), mTextureId(""), mTileWidth(0), mTileHeight(0), mMaxIntensity(pMaxIntensity) {
   // set mAnimationCounter, mXOffset, mYOffset, mRed, mGreen, mBlue, mAlpha
   update();
 }
 
-void DemoBackground::load(const LoaderParams *pParams) {
+void DemoBackground::load(const std::unique_ptr<LoaderParams> &pParams) {
   mTextureId = pParams->getTextureId();
   mTileWidth = pParams->getWidth();
   mTileHeight = pParams->getHeight();
@@ -76,4 +76,6 @@ void DemoBackground::update(void) {
 }
 
 void DemoBackground::cleanup(void) { }
+
+void DemoBackground::collision(void) { }
 

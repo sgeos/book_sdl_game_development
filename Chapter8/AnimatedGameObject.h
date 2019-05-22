@@ -4,19 +4,18 @@
 #include "BaseCreator.h"
 #include "GameObject.h"
 #include "LoaderParams.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 
-class AnimatedGameObject : public SdlGameObject {
+class AnimatedGameObject : public ShooterObject {
   public:
     AnimatedGameObject(void);
-    void load(const LoaderParams *pParams);
-    void draw(void);
-    void update(void);
-    void cleanup(void);
-
-  private:
-    int mAnimationSpeed;
-    int mAnimationFrames;
+    virtual ~AnimatedGameObject(void);
+    virtual void load(const std::unique_ptr<LoaderParams> &pParams);
+    virtual void draw(void);
+    virtual void update(void);
+    virtual void cleanup(void);
+    virtual void collision(void);
+    virtual std::string type(void) { return "AnimatedGameObject"; }
 };
 
 class AnimatedGameObjectCreator : public BaseCreator {

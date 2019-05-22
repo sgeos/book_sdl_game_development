@@ -3,20 +3,22 @@
 
 #include "BaseCreator.h"
 #include "GameObject.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 #include "LoaderParams.h"
 
-class DemoPlayer : public SdlGameObject {
+class DemoPlayer : public ShooterObject {
   public:
     DemoPlayer(void);
-    void load(const LoaderParams *pParams);
+    ~DemoPlayer(void);
+    void load(const std::unique_ptr<LoaderParams> &pParams);
     void draw(void);
     void update(void);
     void cleanup(void);
     void handleInput(void);
+    virtual void collision(void);
+    virtual std::string type(void) { return "DemoPlayer"; }
 
   private:
-    int mAnimationFrames;
     int mBaseRotation;
     float mOrbitScale;
     int mJoypadId;

@@ -10,13 +10,14 @@ LoaderParams::LoaderParams(
   int pHeight,
   double pScale,
   double pRotation,
+  double pAlpha,
   bool pXFlip,
   bool pYFlip,
-  int pAnimationCounter,
-  int pAnimationFrame,
   int pAnimationRow,
+  int pAnimationFrame,
+  int pAnimationFrameCount,
+  int pAnimationCounter,
   int pAnimationSpeed,
-  int pAnimationFrames,
   int pMaxIntensity,
   int pCallbackId
 ) :
@@ -27,12 +28,13 @@ LoaderParams::LoaderParams(
   mHeight(pHeight),
   mScale(pScale),
   mRotation(pRotation),
+  mAlpha(pAlpha),
   mFlip((SDL_RendererFlip)((pXFlip ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) | (pYFlip ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE))),
-  mAnimationCounter(pAnimationCounter),
-  mAnimationFrame(pAnimationFrame),
   mAnimationRow(pAnimationRow),
+  mAnimationFrame(pAnimationFrame),
+  mAnimationFrameCount(pAnimationFrameCount),
+  mAnimationCounter(pAnimationCounter),
   mAnimationSpeed(pAnimationSpeed),
-  mAnimationFrames(pAnimationFrames),
   mMaxIntensity(pMaxIntensity),
   mCallbackId(pCallbackId)
 { }
@@ -65,28 +67,32 @@ double LoaderParams::getRotation(void) const {
   return mRotation;
 }
 
+double LoaderParams::getAlpha(void) const {
+  return mAlpha;
+}
+
 SDL_RendererFlip LoaderParams::getFlip(void) const {
   return mFlip;
-}
-
-int LoaderParams::getAnimationCounter(void) const {
-  return mAnimationCounter;
-}
-
-int LoaderParams::getAnimationFrame(void) const {
-  return mAnimationFrame;
 }
 
 int LoaderParams::getAnimationRow(void) const {
   return mAnimationRow;
 }
 
-int LoaderParams::getAnimationSpeed(void) const {
-  return mAnimationSpeed;
+int LoaderParams::getAnimationFrame(void) const {
+  return mAnimationFrame;
 }
 
-int LoaderParams::getAnimationFrames(void) const {
-  return mAnimationFrames;
+int LoaderParams::getAnimationFrameCount(void) const {
+  return mAnimationFrameCount;
+}
+
+int LoaderParams::getAnimationCounter(void) const {
+  return mAnimationCounter;
+}
+
+int LoaderParams::getAnimationSpeed(void) const {
+  return mAnimationSpeed;
 }
 
 int LoaderParams::getMaxIntensity(void) const {

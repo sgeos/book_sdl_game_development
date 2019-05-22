@@ -14,13 +14,14 @@ class LoaderParams {
       int pHeight = 0,
       double pScale = 1.0,
       double pRotation = 0.0,
+      double pAlpha = 1.0,
       bool pXFlip = false,
       bool pYFlip = false,
-      int pAnimationCounter = 0,
-      int pAnimationFrame = 0,
       int pAnimationRow = 0,
+      int pAnimationFrame = 0,
+      int pAnimationFrameCount = 1,
+      int pAnimationCounter = 0,
       int pAnimationSpeed = 1,
-      int pAnimationFrames = 1,
       int pMaxIntensity = 255,
       int pCallbackId = 0
     );
@@ -31,22 +32,22 @@ class LoaderParams {
     int getHeight(void) const;
     double getScale(void) const;
     double getRotation(void) const;
+    double getAlpha(void) const;
     SDL_RendererFlip getFlip(void) const;
-    int getAnimationCounter(void) const;
-    int getAnimationFrame(void) const;
     int getAnimationRow(void) const;
+    int getAnimationFrame(void) const;
+    int getAnimationFrameCount(void) const;
+    int getAnimationCounter(void) const;
     int getAnimationSpeed(void) const;
-    int getAnimationFrames(void) const;
     int getMaxIntensity(void) const;
     int getCallbackId(void) const;
 
   protected:
     std::string mTextureId;
     int mX, mY, mWidth, mHeight;
-    double mScale, mRotation;
+    double mScale, mRotation, mAlpha;
     SDL_RendererFlip mFlip;
-    int mAnimationCounter, mAnimationFrame, mAnimationRow;
-    int mAnimationSpeed, mAnimationFrames;
+    int mAnimationRow, mAnimationFrame, mAnimationFrameCount, mAnimationCounter, mAnimationSpeed;
     int mMaxIntensity;
     int mCallbackId;
 };

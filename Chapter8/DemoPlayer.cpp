@@ -4,11 +4,11 @@
 #include "DemoPlayer.h"
 #include "Constants.h"
 #include "InputHandler.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 #include "TextureManager.h"
 
 DemoPlayer::DemoPlayer(void) :
-  mAnimationFrames(0),
+  ShooterObject(),
   mBaseRotation(0),
   mOrbitScale(1.0),
   mJoypadId(0),
@@ -18,16 +18,14 @@ DemoPlayer::DemoPlayer(void) :
   mScale = 1.5;
 }
 
-void DemoPlayer::load(const LoaderParams *pParams) {
-  SdlGameObject::load(pParams);
-  if (0 == mAnimationFrames) {
-    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-    mAnimationFrames /= mWidth;
-  }
+DemoPlayer::~DemoPlayer(void) { }
+
+void DemoPlayer::load(const std::unique_ptr<LoaderParams> &pParams) {
+  ShooterObject::load(pParams);
 }
 
 void DemoPlayer::draw(void) {
-  SdlGameObject::draw();
+  ShooterObject::draw();
 }
 
 void DemoPlayer::handleInput(void) {
@@ -89,14 +87,13 @@ void DemoPlayer::handleInput(void) {
 }
 
 void DemoPlayer::update(void) {
-  SdlGameObject::update();
+  ShooterObject::update();
   handleInput();
   mScale += (-1.0 / 60.0) * sin((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
   float dX = 2.5 * mOrbitScale * cos((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
   float dY = 1.0 * mOrbitScale * sin((float)mAnimationCounter / (Constants::FramesPerSecond() / 2));
   mVelocity.setX(dX);
   mVelocity.setY(dY);
-  mAnimationFrame = mAnimationCounter * Constants::AnimationFrames() / Constants::FramesPerSecond() % mAnimationFrames;
   float ddX = mAcceleration.getX();
   ddX += 0.0 == ddX ? dX : 0.0;
   mFlip = 0.0 == ddX ? mFlip : ddX < 0.0 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
@@ -104,4 +101,6 @@ void DemoPlayer::update(void) {
 }
 
 void DemoPlayer::cleanup(void) { }
+
+void DemoPlayer::collision(void) { }
 

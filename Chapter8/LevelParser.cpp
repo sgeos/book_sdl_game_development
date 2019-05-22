@@ -120,13 +120,14 @@ void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Lay
         int height = 0;
         double scale = 1.0;
         double rotation = 0.0;
+        double alpha = 1.0;
         bool xFlip = false;
         bool yFlip = false;
-        int animationCounter = 0;
-        int animationFrame = 0;
         int animationRow = 0;
+        int animationFrame = 0;
+        int animationFrameCount = 0;
+        int animationCounter = 0;
         int animationSpeed = 1;
-        int animationFrames = 0;
         int maxIntensity = 255;
         int callbackId = 0;
         e->Attribute("x", &x);
@@ -144,20 +145,22 @@ void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Lay
                 property->Attribute("value", &scale);
               } else if (std::string("rotation") == property->Attribute("name")) {
                 property->Attribute("value", &rotation);
+              } else if (std::string("alpha") == property->Attribute("name")) {
+                property->Attribute("value", &alpha);
               } else if (std::string("x_flip") == property->Attribute("name") && nullptr != property->Attribute("value")) {
                 xFlip = 0 == std::string("true").compare(property->Attribute("value"));
               } else if (std::string("y_flip") == property->Attribute("name") && nullptr != property->Attribute("value")) {
                 yFlip = 0 == std::string("true").compare(property->Attribute("value"));
-              } else if (std::string("animation_counter") == property->Attribute("name")) {
-                property->Attribute("value", &animationCounter);
-              } else if (std::string("animation_frame") == property->Attribute("name")) {
-                property->Attribute("value", &animationFrame);
               } else if (std::string("animation_row") == property->Attribute("name")) {
                 property->Attribute("value", &animationRow);
+              } else if (std::string("animation_frame") == property->Attribute("name")) {
+                property->Attribute("value", &animationFrame);
+              } else if (std::string("animation_frame_count") == property->Attribute("name")) {
+                property->Attribute("value", &animationFrameCount);
+              } else if (std::string("animation_counter") == property->Attribute("name")) {
+                property->Attribute("value", &animationCounter);
               } else if (std::string("animation_speed") == property->Attribute("name")) {
                 property->Attribute("value", &animationSpeed);
-              } else if (std::string("animation_frames") == property->Attribute("name")) {
-                property->Attribute("value", &animationFrames);
               } else if (std::string("max_intensity") == property->Attribute("name")) {
                 property->Attribute("value", &maxIntensity);
               } else if (std::string("callback_id") == property->Attribute("name")) {
@@ -167,23 +170,26 @@ void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Lay
           }
         }
         gameObject->load(
-          new LoaderParams(
-            textureId,
-            x,
-            y,
-            width,
-            height,
-            scale,
-            rotation,
-            xFlip,
-            yFlip,
-            animationCounter,
-            animationFrame,
-            animationRow,
-            animationSpeed,
-            animationFrames,
-            maxIntensity,
-            callbackId
+          std::unique_ptr<LoaderParams>(
+            new LoaderParams(
+              textureId,
+              x,
+              y,
+              width,
+              height,
+              scale,
+              rotation,
+              alpha,
+              xFlip,
+              yFlip,
+              animationRow,
+              animationFrame,
+              animationFrameCount,
+              animationCounter,
+              animationSpeed,
+              maxIntensity,
+              callbackId
+            )
           )
         );
         objectLayer->getGameObjectList()->push_back(gameObject);

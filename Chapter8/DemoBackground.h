@@ -8,10 +8,12 @@
 class DemoBackground : public GameObject {
   public:
     DemoBackground(int pMaxIntensity = 255);
-    virtual void load(const LoaderParams *pParams);
+    virtual void load(const std::unique_ptr<LoaderParams> &pParams);
     virtual void draw(void);
     virtual void update(void);
     virtual void cleanup(void);
+    virtual void collision(void);
+    virtual std::string type(void) { return "DemoBackground"; }
 
   protected:
     std::string mTextureId;

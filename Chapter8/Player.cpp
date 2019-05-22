@@ -6,22 +6,29 @@
 #include "Player.h"
 #include "Constants.h"
 #include "InputHandler.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 #include "TextureManager.h"
 
-Player::Player(void) : mAnimationFrames(0), mTargetApproachSpeed(6) { }
+Player::Player(void) : ShooterObject(), mTargetApproachSpeed(6) { }
 
-void Player::load(const LoaderParams *pParams) {
-  SdlGameObject::load(pParams);
-  if (0 == mAnimationFrames) {
-    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-    mAnimationFrames /= mWidth;
-  }
+Player::~Player(void) { }
+
+void Player::load(const std::unique_ptr<LoaderParams> &pParams) {
+  ShooterObject::load(pParams);
 }
 
 void Player::draw(void) {
-  SdlGameObject::draw();
+  ShooterObject::draw();
 }
+
+void Player::update(void) {
+  ShooterObject::update();
+  handleInput();
+}
+
+void Player::cleanup(void) { }
+
+void Player::collision(void) { }
 
 void Player::handleInput(void) {
   Vector2D *target = InputHandler::Instance()->getMousePosition();
@@ -33,12 +40,4 @@ void Player::handleInput(void) {
   mVelocity *= 0 == dX ? 0.0 : mTargetApproachSpeed;
   mFlip = 0 == dX ? mFlip : dX < 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 }
-
-void Player::update(void) {
-  SdlGameObject::update();
-  handleInput();
-  mAnimationFrame = mAnimationCounter * Constants::AnimationFrames() / Constants::FramesPerSecond() % mAnimationFrames;
-}
-
-void Player::cleanup(void) { }
 

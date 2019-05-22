@@ -4,6 +4,7 @@
 #include <string>
 #include "GameState.h"
 #include "Level.h"
+#include "ShooterObject.h"
 
 class PlayState : public GameState {
   public:
@@ -16,7 +17,7 @@ class PlayState : public GameState {
     static const std::string sStateId;
     Level *mLevel;
 
-    bool checkCollision(SdlGameObject *pObjectA, SdlGameObject *pObjectB);
+    bool checkCollision(ShooterObject *pObjectA, ShooterObject *pObjectB);
 };
 
 #endif // PLAY_STATE_H

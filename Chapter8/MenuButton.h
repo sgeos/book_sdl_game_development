@@ -4,15 +4,18 @@
 #include "BaseCreator.h"
 #include "GameObject.h"
 #include "LoaderParams.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 
-class MenuButton : public SdlGameObject {
+class MenuButton : public ShooterObject {
   public:
     MenuButton(void);
-    void load(const LoaderParams *pParams);
+    ~MenuButton(void);
+    void load(const std::unique_ptr<LoaderParams> &pParams);
     void draw(void);
     void update(void);
     void cleanup(void);
+    virtual void collision(void);
+    virtual std::string type(void) { return "MenuButton"; }
     void setCallback(void (*pCallback)(void));
     int getCallbackId(void);
 

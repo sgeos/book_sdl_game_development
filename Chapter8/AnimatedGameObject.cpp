@@ -4,30 +4,26 @@
 #include "AnimatedGameObject.h"
 #include "Constants.h"
 #include "LoaderParams.h"
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 #include "TextureManager.h"
 
-AnimatedGameObject::AnimatedGameObject(void) : SdlGameObject(), mAnimationSpeed(1), mAnimationFrames(1) { }
+AnimatedGameObject::AnimatedGameObject(void) : ShooterObject() { }
 
-void AnimatedGameObject::load(const LoaderParams *pParams)
-{
-  SdlGameObject::load(pParams);
-  mAnimationSpeed = pParams->getAnimationSpeed();
-  mAnimationFrames = pParams->getAnimationFrames();
-  if (0 == mAnimationFrames) {
-    TextureManager::Instance()->queryTexture(mTextureId, nullptr, nullptr, &mAnimationFrames, nullptr);
-    mAnimationFrames /= mWidth;
-  }
+AnimatedGameObject::~AnimatedGameObject(void) { }
+
+void AnimatedGameObject::load(const std::unique_ptr<LoaderParams> &pParams) {
+  ShooterObject::load(pParams);
 }
 
 void AnimatedGameObject::draw(void) {
-  SdlGameObject::draw();
+  ShooterObject::draw();
 }
 
 void AnimatedGameObject::update(void) {
-  SdlGameObject::update();
-  mAnimationFrame = (mAnimationCounter / (1000 / mAnimationSpeed)) % mAnimationFrames;
+  ShooterObject::update();
 }
 
 void AnimatedGameObject::cleanup(void) { }
+
+void AnimatedGameObject::collision(void) { }
 

@@ -31,7 +31,8 @@
  <objectgroup color="#00ff00" id="3" name="Object Layer 1">
   <object id="2" name="player" type="Player" x="256" y="212" width="32" height="32">
    <properties>
-    <property name="animation_frames" value="5"/>
+    <property name="animation_frame_count" value="4"/>
+    <property name="animation_speed" value="250"/>
     <property name="height" value="55"/>
     <property name="texture_id" value="player"/>
     <property name="width" value="128"/>

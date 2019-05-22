@@ -1,23 +1,25 @@
-#include "SdlGameObject.h"
+#include "ShooterObject.h"
 #include "InputHandler.h"
 #include "LoaderParams.h"
 #include "MenuButton.h"
 
-MenuButton::MenuButton(void) : mCallback(nullptr) {
+MenuButton::MenuButton(void) : ShooterObject(), mCallback(nullptr) {
   mAnimationFrame = MOUSE_OUT;
 }
 
-void MenuButton::load(const LoaderParams *pParams) {
-  SdlGameObject::load(pParams);
+MenuButton::~MenuButton(void) { }
+
+void MenuButton::load(const std::unique_ptr<LoaderParams> &pParams) {
+  ShooterObject::load(pParams);
   mCallbackId = pParams->getCallbackId();
 }
 
 void MenuButton::draw(void) {
-  SdlGameObject::draw();
+  ShooterObject::draw();
 }
 
 void MenuButton::update(void) {
-  SdlGameObject::update();
+  ShooterObject::update();
   const Vector2D *mousePosition = InputHandler::Instance()->getMousePosition();
   const int mouseX = mousePosition->getX();
   const int mouseY = mousePosition->getY();
@@ -46,7 +48,10 @@ void MenuButton::update(void) {
 }
 
 void MenuButton::cleanup(void) {
-  SdlGameObject::cleanup();
+  ShooterObject::cleanup();
+}
+
+void MenuButton::collision(void) {
 }
 
 void MenuButton::setCallback(void (*pCallback)(void)) {
