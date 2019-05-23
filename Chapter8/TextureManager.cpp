@@ -33,9 +33,10 @@ void TextureManager::draw(
   int pHeight,
   double pScale,
   double pRotation,
+  double pAlpha,
   SDL_RendererFlip pFlip
 ) {
-  drawFrame(pId, pPositionX, pPositionY, pWidth, pHeight, 0, 0, pScale, pRotation, pFlip);
+  drawFrame(pId, pPositionX, pPositionY, pWidth, pHeight, 0, 0, pScale, pRotation, pAlpha, pFlip);
 }
 
 void TextureManager::drawFrame(
@@ -48,6 +49,7 @@ void TextureManager::drawFrame(
   int pFrame,
   double pScale,
   double pRotation,
+  double pAlpha,
   SDL_RendererFlip pFlip
 ) {
   SDL_Renderer *renderer = Game::Instance()->getRenderer();
@@ -61,6 +63,7 @@ void TextureManager::drawFrame(
   destinationRectangle.y = pPositionY + (pHeight - pHeight * pScale) / 2;
   destinationRectangle.w = pWidth * pScale;
   destinationRectangle.h = pHeight * pScale;
+  SDL_SetTextureAlphaMod(mTextureMap[pId], (int)(pAlpha * 255));
   SDL_RenderCopyEx(renderer, mTextureMap[pId], &sourceRectangle, &destinationRectangle, pRotation, nullptr, pFlip);
 }
 

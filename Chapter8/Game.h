@@ -26,6 +26,14 @@ class Game {
     int getFrame(void);
     SDL_Renderer *getRenderer(void);
     GameStateMachine *getStateMachine(void);
+    void setPlayerLives(int pPlayerLives) { mPlayerLives = pPlayerLives; }
+    int getPlayerLives(void) { return mPlayerLives; }
+    void setCurrentLevel(int pCurrentLevel);
+    const int getCurrentLevel(void) { return mCurrentLevel; }
+    void setNextLevel(int pNextLevel) { mNextLevel = pNextLevel; }
+    const int getNextLevel(void) { return mNextLevel; }
+    void setLevelComplete(int pLevelComplete) { mLevelComplete = pLevelComplete; }
+    const bool getLevelComplete(void) { return mLevelComplete; }
     int getWidth(void);
     int getHeight(void);
     void quit(void);
@@ -37,6 +45,10 @@ class Game {
     SDL_Window *mWindow;
     SDL_Renderer *mRenderer;
     GameStateMachine *mGameStateMachine;
+    int mPlayerLives;
+    int mCurrentLevel;
+    int mNextLevel;
+    bool mLevelComplete;
     int mFrame;
     bool mDone;
     bool mError;

@@ -13,9 +13,12 @@ class GameStateMachine {
     bool empty(void);
     void update(void);
     void render(void);
+    void setTransitionState(GameState *pTransitionState);
+    void commitTransitionState(void);
 
   private:
     std::vector<GameState *> mStateStack;
+    GameState * mTransitionState;
 };
 
 #endif // GAME_STATE_MACHINE_H

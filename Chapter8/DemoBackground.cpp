@@ -28,7 +28,10 @@ void DemoBackground::draw(void) {
       SDL_RendererFlip xFlip = (0 != (xIndex % 2)) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
       SDL_RendererFlip yFlip = (0 != (yIndex % 2)) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE;
       SDL_RendererFlip flip = (SDL_RendererFlip)(xFlip | yFlip);
-      TextureManager::Instance()->draw(mTextureId, x, y, mTileWidth, mTileHeight, 1.0, 0.0, flip);
+      float scale = 1.0f;
+      float rotation = 0.0f;
+      float alpha = 1.0f;
+      TextureManager::Instance()->draw(mTextureId, x, y, mTileWidth, mTileHeight, scale, rotation, alpha, flip);
     }
   }
 }

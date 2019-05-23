@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "Game.h"
 #include "GameOverState.h"
+#include "GameState.h"
 #include "InputHandler.h"
 #include "PlayState.h"
 #include "PauseState.h"
@@ -21,11 +22,10 @@ void PlayState::update(void) {
     mGameObjectList[i]->update();
   }
   int joypadId = 0;
-  //if (checkCollision(dynamic_cast<ShooterObject *>(mGameObjectList[1]), dynamic_cast<ShooterObject *>(mGameObjectList[2]))) {
-  //  Game::Instance()->getStateMachine()->changeState(new GameOverState());
-  //} else
   if (InputHandler::Instance()->isButtonDown(joypadId, 5) || InputHandler::Instance()->isKeyDown(SDL_SCANCODE_ESCAPE)) {
     Game::Instance()->getStateMachine()->pushState(new PauseState());
+  } else {
+    Game::Instance()->getStateMachine()->commitTransitionState();
   }
 }
 

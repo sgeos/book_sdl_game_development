@@ -61,3 +61,14 @@ void GameStateMachine::render(void) {
   }
 }
 
+void GameStateMachine::setTransitionState(GameState *pTransitionState) {
+  mTransitionState = pTransitionState;
+}
+
+void GameStateMachine::commitTransitionState(void) {
+  if (nullptr != mTransitionState) {
+    changeState(mTransitionState);
+  }
+  mTransitionState = nullptr;
+}
+

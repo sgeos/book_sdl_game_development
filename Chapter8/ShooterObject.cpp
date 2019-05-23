@@ -32,7 +32,7 @@ void ShooterObject::draw(void) {
     mTextureId,
     (int)mPosition.getX(), (int)mPosition.getY(), mWidth, mHeight,
     mAnimationRow, mAnimationFrame,
-    mScale, mRotation, mFlip
+    mScale, mRotation, mAlpha, mFlip
   );
 }
 

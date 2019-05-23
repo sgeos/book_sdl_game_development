@@ -22,6 +22,7 @@ class TextureManager {
       int pHeight,
       double pScale = 1.0,
       double pRotation = 0.0,
+      double pAlpha = 1.0,
       SDL_RendererFlip pFlip = SDL_FLIP_NONE
     );
     void drawFrame(
@@ -34,6 +35,7 @@ class TextureManager {
       int pFrame,
       double pScale = 1.0,
       double pRotation = 0.0,
+      double pAlpha = 1.0,
       SDL_RendererFlip pFlip = SDL_FLIP_NONE
     );
     void drawTile(

@@ -3,13 +3,20 @@
 #include <cmath>
 #include <SDL2/SDL.h>
 
+#include "Game.h"
 #include "Player.h"
 #include "Constants.h"
 #include "InputHandler.h"
 #include "ShooterObject.h"
 #include "TextureManager.h"
 
-Player::Player(void) : ShooterObject(), mTargetApproachSpeed(6) { }
+Player::Player(void) :
+  ShooterObject(),
+  mTargetApproachSpeed(6),
+  mInvulnerable(false),
+  mInvulnerableTime(200),
+  mInvulnerableCounter(0)
+  { }
 
 Player::~Player(void) { }
 
@@ -22,13 +29,45 @@ void Player::draw(void) {
 }
 
 void Player::update(void) {
+  if (Game::Instance()->getLevelComplete()) {
+    mVelocity.setX(3);
+    mVelocity.setY(0);
+    if (Game::Instance()->getWidth() <= mPosition.getX()) {
+      Game::Instance()->setCurrentLevel(Game::Instance()->getCurrentLevel() + 1);
+    }
+  } else if (true == mDying) {
+    mDyingCounter++;
+    if (mDyingTime < mDyingCounter) {
+      ressurect();
+    }
+  } else {
+    mVelocity.setX(0);
+    mVelocity.setY(0);
+    handleInput();
+  }
+  handleAnimation();
   ShooterObject::update();
-  handleInput();
 }
 
 void Player::cleanup(void) { }
 
 void Player::collision(void) { }
+
+void Player::ressurect(void) {
+  Game::Instance()->setPlayerLives(Game::Instance()->getPlayerLives() - 1);
+  mPosition.setX(10);
+  mPosition.setY(200);
+  mRotation = 0.0f;
+  mDying = false;
+  mDyingCounter = 0;
+  mDead = false;
+  mInvulnerable = true;
+  mTextureId = "helicopter0";
+  mAnimationFrame = 0;
+  mAnimationFrameCount = 4;
+  mWidth = 101;
+  mHeight = 46;
+}
 
 void Player::handleInput(void) {
   Vector2D *target = InputHandler::Instance()->getMousePosition();
@@ -39,5 +78,27 @@ void Player::handleInput(void) {
   mVelocity.normalize();
   mVelocity *= 0 == dX ? 0.0 : mTargetApproachSpeed;
   mFlip = 0 == dX ? mFlip : dX < 0 ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+}
+
+void Player::handleAnimation(void) {
+  if (mInvulnerable && mInvulnerableCounter < mInvulnerableTime) {
+    mAlpha = 0.5;
+    mInvulnerableCounter++;
+  } else {
+    mInvulnerable = false;
+    mInvulnerableCounter = 0;
+    mAlpha = 1.0;
+  }
+  if (false == mDead) {
+    int dY = (int)mVelocity.getY();
+    if (SDL_FLIP_NONE == mFlip) {
+      dY *= -1;
+    }
+    if ((dY < 0 && -10 < mRotation) || (0 == dY && 0 < mRotation)) {
+      mRotation--;
+    } else if ((0 < dY && mRotation < 10) || (0 == dY && mRotation < 0)) {
+      mRotation++;
+    }
+  }
 }
 

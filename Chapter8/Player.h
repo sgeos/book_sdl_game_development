@@ -16,10 +16,16 @@ class Player : public ShooterObject {
     virtual void cleanup(void);
     virtual void collision(void);
     virtual std::string type(void) { return "Player"; }
-    void handleInput(void);
 
-  protected:
+  private:
     int mTargetApproachSpeed;
+    bool mInvulnerable;
+    int mInvulnerableTime;
+    int mInvulnerableCounter;
+
+    void ressurect(void);
+    void handleInput(void);
+    void handleAnimation(void);
 };
 
 class PlayerCreator : public BaseCreator {

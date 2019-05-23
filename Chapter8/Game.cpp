@@ -16,6 +16,7 @@
 #include "Enemy.h"
 #include "Game.h"
 #include "GameObjectFactory.h"
+#include "GameOverState.h"
 #include "GameStateMachine.h"
 #include "InputHandler.h"
 #include "Log.h"
@@ -99,6 +100,10 @@ void Game::reset(void) {
   mGameStateMachine->changeState(new DemoState());
   mGameStateMachine->pushState(new MainMenuState());
   mFrame = 0;
+  mPlayerLives = 3;
+  mCurrentLevel = 1;
+  mNextLevel = 2;
+  mLevelComplete = false;
   mDone = mError = false;
 }
 
@@ -153,6 +158,12 @@ int Game::getWidth(void) {
 
 int Game::getHeight(void) {
   return Constants::WindowHeight();
+}
+
+void Game::setCurrentLevel(int pCurrentLevel) {
+  mCurrentLevel = pCurrentLevel;
+  mGameStateMachine->setTransitionState(new GameOverState());
+  mLevelComplete = false;
 }
 
 void Game::quit(void) {
