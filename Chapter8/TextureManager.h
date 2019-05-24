@@ -49,6 +49,11 @@ class TextureManager {
       int pRow,
       int pFrame
     );
+    void drawRaw(
+      std::string pId,
+      const SDL_Rect *pSource,
+      const SDL_Rect *pDestination
+    );
     int queryTexture(std::string pId, Uint32 *pFormat, int *pAccess, int *pWidth, int *pHeight);
 
   private:

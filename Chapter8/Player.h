@@ -9,7 +9,7 @@
 class Player : public ShooterObject {
   public:
     Player(void);
-    virtual ~Player();
+    virtual ~Player(void);
     virtual void load(const std::unique_ptr<LoaderParams> &pParams);
     virtual void draw(void);
     virtual void update(void);

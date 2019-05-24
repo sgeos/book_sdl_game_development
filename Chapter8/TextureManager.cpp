@@ -89,6 +89,15 @@ void TextureManager::drawTile(
   SDL_RenderCopyEx(renderer, mTextureMap[pId], &source, &destination, 0, 0, SDL_FLIP_NONE);
 }
 
+void TextureManager::drawRaw(
+  std::string pId,
+  const SDL_Rect *pSource,
+  const SDL_Rect *pDestination
+) {
+  SDL_Renderer *renderer = Game::Instance()->getRenderer();
+  SDL_RenderCopyEx(renderer, mTextureMap[pId], pSource, pDestination, 0, 0, SDL_FLIP_NONE);
+}
+
 int TextureManager::queryTexture(std::string pId, Uint32 *pFormat, int *pAccess, int *pWidth, int *pHeight) {
   return SDL_QueryTexture(mTextureMap[pId], pFormat, pAccess, pWidth, pHeight);
 }

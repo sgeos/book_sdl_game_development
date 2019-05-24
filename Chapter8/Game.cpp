@@ -23,6 +23,7 @@
 #include "MainMenuState.h"
 #include "MenuButton.h"
 #include "Player.h"
+#include "ScrollingBackground.h"
 #include "Utility.h"
 
 Game *Game::sInstance = nullptr;
@@ -37,6 +38,7 @@ Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
   // GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
   GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
   GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
+  GameObjectFactory::Instance()->registerType("ScrollingBackground", new ScrollingBackgroundCreator());
   reset();
   std::cout << Constants::ApplicationName() << " Game Start." << std::endl;
 }
