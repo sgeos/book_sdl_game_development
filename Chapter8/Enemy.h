@@ -8,24 +8,21 @@
 
 class Enemy : public ShooterObject {
   public:
-    Enemy(void);
-    ~Enemy(void);
-    void load(const std::unique_ptr<LoaderParams> &pParams);
-    void draw(void);
-    void update(void);
-    void cleanup(void);
-    virtual void collision(void);
     virtual std::string type(void) { return "Enemy"; }
 
-  private:
-    int mRadiusX, mRadiusY;
+  protected:
+    int mHealth;
+
+    Enemy(void) : ShooterObject(), mHealth(0) { }
+    Enemy(int pHealth) : ShooterObject(), mHealth(pHealth) { }
+    virtual ~Enemy(void) { }
 };
 
-class EnemyCreator : public BaseCreator {
-  GameObject *createGameObject(void) const {
-    return new Enemy();
-  }
-};
+// class EnemyCreator : public BaseCreator {
+//   GameObject *createGameObject(void) const {
+//     return new Enemy();
+//   }
+// };
 
 #endif // ENEMY_H
 

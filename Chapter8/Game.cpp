@@ -34,7 +34,7 @@ Game::Game(void) : mWindow(nullptr), mRenderer(nullptr) {
   GameObjectFactory::Instance()->registerType("DemoBackgroundObject", new DemoBackgroundObjectCreator());
   GameObjectFactory::Instance()->registerType("DemoGameObject", new DemoGameObjectCreator());
   GameObjectFactory::Instance()->registerType("DemoPlayer", new DemoPlayerCreator());
-  GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
+  // GameObjectFactory::Instance()->registerType("Enemy", new EnemyCreator());
   GameObjectFactory::Instance()->registerType("MenuButton", new MenuButtonCreator());
   GameObjectFactory::Instance()->registerType("Player", new PlayerCreator());
   reset();
