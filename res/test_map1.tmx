@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.2" tiledversion="1.2.3" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" infinite="0" nextlayerid="8" nextobjectid="50">
  <properties>
+  <property name="large_explosion" value="large_explosion.png"/>
   <property name="player" value="helicopter0.png"/>
   <property name="stage_background" value="background.png"/>
  </properties>

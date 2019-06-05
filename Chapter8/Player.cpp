@@ -51,7 +51,16 @@ void Player::update(void) {
 
 void Player::cleanup(void) { }
 
-void Player::collision(void) { }
+void Player::collision(void) {
+  if (!mInvulnerable && !Game::Instance()->getLevelComplete()) {
+    mTextureId = "large_explosion";
+    mAnimationFrame = 0;
+    mAnimationFrameCount = 9;
+    mWidth = 60;
+    mHeight = 60;
+    mDying = true;
+  }
+}
 
 void Player::ressurect(void) {
   Game::Instance()->setPlayerLives(Game::Instance()->getPlayerLives() - 1);
@@ -62,7 +71,7 @@ void Player::ressurect(void) {
   mDyingCounter = 0;
   mDead = false;
   mInvulnerable = true;
-  mTextureId = "helicopter0";
+  mTextureId = "player";
   mAnimationFrame = 0;
   mAnimationFrameCount = 4;
   mWidth = 101;

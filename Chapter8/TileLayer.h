@@ -8,11 +8,12 @@
 
 class TileLayer : public Layer {
   public:
-    TileLayer(int pTileSize, const std::vector<Tileset> &pTilesetList);
+    TileLayer(int pTileSize, const std::vector<struct Tileset> &pTilesetList);
     virtual void render(void);
     virtual void update(void);
     void setTileIds(const std::vector<std::vector<int>> &pTileIdList);
     void setTileSize(int pTileSize);
+    void setMapWidth(int pMapWidth) { mMapWidth = pMapWidth; }
     int getTileIdByPosition(int pXIndex, int pYIndex);
     Tileset getTilesetById(int pTileId);
 
@@ -20,6 +21,7 @@ class TileLayer : public Layer {
     int mColumnCount;
     int mRowCount;
     int mTileSize;
+    int mMapWidth;
     Vector2D mPosition;
     Vector2D mVelocity;
     const std::vector<Tileset> &mTilesetList;

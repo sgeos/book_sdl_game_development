@@ -5,7 +5,7 @@
 #include "TextureManager.h"
 #include "TileLayer.h"
 
-TileLayer::TileLayer(int pTileSize, const std::vector<Tileset> &pTilesetList) :
+TileLayer::TileLayer(int pTileSize, const std::vector<struct Tileset> &pTilesetList) :
   mTileSize(pTileSize),
   mPosition(0.0f, 0.0f),
   mVelocity(0.0f, 0.0f),
