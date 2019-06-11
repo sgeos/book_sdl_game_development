@@ -16,6 +16,9 @@ class TileLayer : public Layer {
     void setMapWidth(int pMapWidth) { mMapWidth = pMapWidth; }
     int getTileIdByPosition(int pXIndex, int pYIndex);
     Tileset getTilesetById(int pTileId);
+    int getTileSize() { return mTileSize; }
+    const std::vector<std::vector<int>>& getTileIdList() { return mTileIdList; }
+    const Vector2D getPosition() { return mPosition; }
 
   private:
     int mColumnCount;
