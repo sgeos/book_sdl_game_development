@@ -24,7 +24,8 @@ void TileLayer::render(void) {
   int columnMax = mColumnCount + 1;
   for (int i = 0; i < rowMax; i++) {
     for (int j = 0; j < columnMax; j++) {
-      int id = getTileIdByPosition(j + xIndex, i + yIndex);
+      int defaultTile = 0;
+      int id = getTileIdByPosition(j + xIndex, i + yIndex, defaultTile);
       if (0 == id) {
         continue;
       }
@@ -57,11 +58,11 @@ void TileLayer::setTileSize(int pTileSize) {
   mTileSize = pTileSize;
 }
 
-int TileLayer::getTileIdByPosition(int pXIndex, int pYIndex) {
+int TileLayer::getTileIdByPosition(int pXIndex, int pYIndex, int pDefault) {
   int xIndexMax = mTileIdList[0].size();
   int yIndexMax = mTileIdList.size();
   if ((pXIndex < 0) || (xIndexMax <= pXIndex) || (pYIndex < 0) || (yIndexMax <= pYIndex)) {
-    return 0;
+    return pDefault;
   }
   return mTileIdList[pYIndex][pXIndex];
 }

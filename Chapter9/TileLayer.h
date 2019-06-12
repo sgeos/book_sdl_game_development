@@ -15,7 +15,7 @@ class TileLayer : public Layer {
     void setTileSize(int pTileSize);
     int getMapWidth(void) { return mMapWidth; }
     void setMapWidth(int pMapWidth) { mMapWidth = pMapWidth; }
-    int getTileIdByPosition(int pXIndex, int pYIndex);
+    int getTileIdByPosition(int pXIndex, int pYIndex, int pDefault);
     Tileset getTilesetById(int pTileId);
     int getTileSize(void) { return mTileSize; }
     const std::vector<std::vector<int>>& getTileIdList() { return mTileIdList; }
