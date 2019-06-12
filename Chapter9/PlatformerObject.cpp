@@ -6,6 +6,7 @@
 #include "LoaderParams.h"
 #include "PlatformerObject.h"
 #include "TextureManager.h"
+#include "TileLayer.h"
 
 void PlatformerObject::load(const std::unique_ptr<LoaderParams> &pParams) {
   mTextureId = pParams->getTextureId();
@@ -50,5 +51,38 @@ void PlatformerObject::doDyingAnimation(void) {
     mDead = true;
   }
   mDyingCounter++;
+}
+
+bool PlatformerObject::checkCollideTile(Vector2D pNewPosition) {
+  if (Game::Instance()->getHeight() - 32 <= pNewPosition.getY() + mHeight) {
+    return false;
+  } else {
+    for (
+      std::vector<TileLayer *>::iterator iterator = mCollisionLayerList->begin();
+      iterator != mCollisionLayerList->end();
+      ++iterator
+    ) {
+      TileLayer *tileLayer = (*iterator);
+      std::vector<std::vector<int>> tileList = tileLayer->getTileIdList();
+      Vector2D layerPosition = tileLayer->getPosition();
+      int x = layerPosition.getX() / tileLayer->getTileSize();
+      int y = layerPosition.getY() / tileLayer->getTileSize();
+      Vector2D startPosition = pNewPosition;
+      startPosition.setX(startPosition.getX() + 15);
+      startPosition.setY(startPosition.getY() + 20);
+      Vector2D endPosition(pNewPosition.getX() + (mWidth - 15), pNewPosition.getY() + (mHeight - 4));
+      for (int i = startPosition.getX(); i < endPosition.getX(); i++) {
+        for (int j = startPosition.getY(); j < endPosition.getY(); j++) {
+          int tileColumn = i / tileLayer->getTileSize();
+          int tileRow = j / tileLayer->getTileSize();
+          int tileId = tileList[tileRow + y][tileColumn + x];
+          if (0 != tileId) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
 }
 

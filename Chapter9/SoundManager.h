@@ -30,8 +30,8 @@ class SoundManager {
     std::map<std::string, Mix_Chunk *> mSoundEffectList;
     std::map<std::string, Mix_Music *> mMusicList;
 
-    SoundManager();
-    ~SoundManager();
+    SoundManager(void);
+    ~SoundManager(void);
     SoundManager(const SoundManager &);
     SoundManager &operator=(const SoundManager &);
 };

@@ -210,6 +210,7 @@ void LevelParser::parseObjectLayer(TiXmlElement *pObjectElement, std::vector<Lay
             )
           )
         );
+        gameObject->setCollisionLayerList(pLevel->getCollisionLayerList());
         if ("Player" == type) {
           pLevel->setPlayer(dynamic_cast<Player *>(gameObject));
         }

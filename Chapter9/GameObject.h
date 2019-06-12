@@ -1,10 +1,13 @@
 #ifndef GAME_OBJECT_H
 #define GAME_OBJECT_H
 
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
 #include "LoaderParams.h"
 #include "Vector2D.h"
+
+class TileLayer;
 
 class GameObject {
   public:
@@ -28,6 +31,7 @@ class GameObject {
     bool updating(void) { return mUpdating; }
     bool dying(void) { return mDying; }
     bool dead(void) { return mDead; }
+    void setCollisionLayerList(std::vector<TileLayer *> *pCollisionLayerList) { mCollisionLayerList = pCollisionLayerList; }
         
   protected:
     GameObject(void) :
@@ -47,6 +51,7 @@ class GameObject {
     SDL_RendererFlip mFlip;
     int mAnimationRow, mAnimationFrame, mAnimationFrameCount, mAnimationCounter, mAnimationSpeed;
     bool mUpdating, mDying, mDead;
+    std::vector<TileLayer *> *mCollisionLayerList;
 };
 
 #endif // GAME_OBJECT_H

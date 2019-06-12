@@ -13,10 +13,11 @@ class TileLayer : public Layer {
     virtual void update(void);
     void setTileIds(const std::vector<std::vector<int>> &pTileIdList);
     void setTileSize(int pTileSize);
+    int getMapWidth(void) { return mMapWidth; }
     void setMapWidth(int pMapWidth) { mMapWidth = pMapWidth; }
     int getTileIdByPosition(int pXIndex, int pYIndex);
     Tileset getTilesetById(int pTileId);
-    int getTileSize() { return mTileSize; }
+    int getTileSize(void) { return mTileSize; }
     const std::vector<std::vector<int>>& getTileIdList() { return mTileIdList; }
     const Vector2D getPosition() { return mPosition; }
 

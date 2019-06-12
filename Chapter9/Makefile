@@ -7,12 +7,12 @@ CXXFLAGS = -g -Wall -c -std=c++14 -I$(SDL_HEADER)
 LDFLAGS = $(SDL)
 LLDBFLAGS =
 LIBZ_DIR = ../zlib-1.2.11/
-EXE = ../bin/Chapter8
+EXE = ../bin/Chapter9
 
 .PHONY: all
 all: $(EXE)
 
-$(EXE): base64.o main.o tinystr.o tinyxml.o tinyxmlerror.o tinyxmlparser.o AnimatedGameObject.o BulletHandler.o CollisionManager.o Constants.o DemoBackground.o DemoBackgroundObject.o DemoGameObject.o DemoPlayer.o DemoState.o Game.o GameObjectFactory.o GameOverState.o GameStateMachine.o InputHandler.o Level.o LevelParser.o LoaderParams.o Log.o MainMenuState.o MenuButton.o MenuState.o ObjectLayer.o PauseState.o PlatformerObject.o Player.o PlayState.o ScrollingBackground.o SoundManager.o StateParser.o TextureManager.o TileLayer.o libz.a
+$(EXE): base64.o main.o tinystr.o tinyxml.o tinyxmlerror.o tinyxmlparser.o AnimatedGameObject.o BulletHandler.o Camera.o CollisionManager.o Constants.o DemoBackground.o DemoBackgroundObject.o DemoGameObject.o DemoPlayer.o DemoState.o Game.o GameObjectFactory.o GameOverState.o GameStateMachine.o InputHandler.o Level.o LevelParser.o LoaderParams.o Log.o MainMenuState.o MenuButton.o MenuState.o ObjectLayer.o PauseState.o PlatformerObject.o Player.o PlayState.o ScrollingBackground.o SoundManager.o StateParser.o TextureManager.o TileLayer.o libz.a
 	mkdir -p $$(dirname $@)
 	$(CXX) $(LDFLAGS) $^ -o $@
 

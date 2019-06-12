@@ -6,12 +6,12 @@
 
 namespace Constants {
   const char * const ApplicationName(void) {
-    static const char result[] = "Chapter8";
+    static const char result[] = "Chapter9";
     return result;
   }
 
   const char * const WindowTitle(void) {
-    static const char result[] = "Chapter 8 - Alien Attack!";
+    static const char result[] = "Chapter 9 - Conan the Caveman!";
     return result;
   }
 

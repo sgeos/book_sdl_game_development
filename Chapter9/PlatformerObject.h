@@ -16,6 +16,15 @@ class PlatformerObject : public GameObject {
     virtual std::string type(void) { return "PlatformerObject"; }
 
   protected:
+    int mBulletFiringSpeed, mBulletCounter;
+    int mMovementSpeed;
+    int mDyingTime, mDyingCounter;
+    bool mPlayedDeathSound;
+    bool mMoveLeft,mMoveRight;
+    bool mRunning, mFalling;
+    bool mCanJump, mJumping;
+    Vector2D mLastSafePosition;
+    int mJumpHeight;
     PlatformerObject(void) :
       GameObject(),
       mBulletFiringSpeed(0),
@@ -23,14 +32,17 @@ class PlatformerObject : public GameObject {
       mMovementSpeed(0),
       mDyingTime(0),
       mDyingCounter(0),
-      mPlayedDeathSound(false)
+      mPlayedDeathSound(false),
+      mMoveLeft(false),
+      mMoveRight(false),
+      mRunning(false),
+      mFalling(false),
+      mCanJump(false),
+      mJumping(false),
+      mLastSafePosition(0.0f, 0.0f)
     { }
     void doDyingAnimation(void);
-
-    int mBulletFiringSpeed, mBulletCounter;
-    int mMovementSpeed;
-    int mDyingTime, mDyingCounter;
-    bool mPlayedDeathSound;
+    bool checkCollideTile(Vector2D pNewPosition);
 };
 
 #endif // PLATFORMER_OBJECT_H
