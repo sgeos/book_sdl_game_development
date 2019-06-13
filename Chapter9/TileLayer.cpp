@@ -1,19 +1,20 @@
 #include <iostream>
 #include <vector>
+#include "Camera.h"
 #include "Game.h"
 #include "Level.h"
 #include "TextureManager.h"
 #include "TileLayer.h"
 
-TileLayer::TileLayer(int pTileSize, const std::vector<struct Tileset> &pTilesetList) :
+TileLayer::TileLayer(int pTileSize, int pMapWidth, int pMapHeight, const std::vector<struct Tileset> &pTilesetList) :
+  mColumnCount(pMapWidth),
+  mRowCount(pMapHeight),
   mTileSize(pTileSize),
+  mMapWidth(pMapWidth),
   mPosition(0.0f, 0.0f),
   mVelocity(0.0f, 0.0f),
   mTilesetList(pTilesetList)
-{
-  mColumnCount = Game::Instance()->getWidth() / mTileSize;
-  mRowCount = Game::Instance()->getHeight() / mTileSize;
-}
+{ }
 
 void TileLayer::render(void) {
   int xIndex = mPosition.getX() / mTileSize;
@@ -29,14 +30,19 @@ void TileLayer::render(void) {
       if (0 == id) {
         continue;
       }
+      int tileX = j * mTileSize - xOffset - Camera::Instance()->getPosition().getX();
+      int tileY = i * mTileSize - yOffset - Camera::Instance()->getPosition().getY();
+      if (tileX < -mTileSize || Game::Instance()->getWidth() < tileX) {
+        continue;
+      }
       Tileset tileset = getTilesetById(id);
       id--;
       TextureManager::Instance()->drawTile(
         tileset.name,
         tileset.margin,
         tileset.spacing,
-        (j * mTileSize) - xOffset,
-        (i * mTileSize) - yOffset,
+        tileX,
+        tileY,
         mTileSize,
         mTileSize,
         (id - (tileset.firstGridId - 1)) / tileset.columnCount,
@@ -46,11 +52,9 @@ void TileLayer::render(void) {
   }
 }
 
-void TileLayer::update(void) {
-  mPosition += mVelocity;
-}
+void TileLayer::update(void) { }
 
-void TileLayer::setTileIds(const std::vector<std::vector<int>> &pTileIdList) {
+void TileLayer::setTileIdList(const std::vector<std::vector<int>> &pTileIdList) {
   mTileIdList = pTileIdList;
 }
 

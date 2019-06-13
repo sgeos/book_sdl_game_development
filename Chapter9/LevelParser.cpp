@@ -67,7 +67,7 @@ void LevelParser::parseTileLayer(
   const std::vector<Tileset> *pTileSetList,
   std::vector<TileLayer *> *pCollisionLayerList
 ) {
-  TileLayer *tileLayer = new TileLayer(mTileSize, *pTileSetList);
+  TileLayer *tileLayer = new TileLayer(mTileSize, mWidth, mHeight, *pTileSetList);
   bool collidable = false;
   std::vector<std::vector<int>> tileData;
   std::string decodedIds;
@@ -102,7 +102,7 @@ void LevelParser::parseTileLayer(
       tileData[row][column] = gidList[row * mWidth + column];
     }
   }
-  tileLayer->setTileIds(tileData);
+  tileLayer->setTileIdList(tileData);
   tileLayer->setMapWidth(mWidth);
   if (collidable) {
     pCollisionLayerList->push_back(tileLayer);

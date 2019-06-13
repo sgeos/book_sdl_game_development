@@ -44,6 +44,8 @@ void Player::draw(void) {
 }
 
 void Player::update(void) {
+  mAnimationCounter++;
+  mAnimationFrame = (mAnimationCounter * mAnimationSpeed / 1000) % mAnimationFrameCount;
   if (!mDying) {
     if (470 <= mPosition.getY() + mHeight) {
       collision();
@@ -181,9 +183,9 @@ void Player::handleAnimation() {
       }
     }
     if (mRunning) {
-      mAnimationSpeed = 10;
+      mAnimationSpeed = 120;
     } else {
-      mAnimationSpeed = 8;
+      mAnimationSpeed = 100;
     }
   } else {
     mAnimationFrame = mDyingCounter / mAnimationFrameCount;

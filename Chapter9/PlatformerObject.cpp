@@ -54,7 +54,7 @@ void PlatformerObject::doDyingAnimation(void) {
 }
 
 bool PlatformerObject::checkCollideTile(Vector2D pNewPosition) {
-  if (Game::Instance()->getHeight() - 32 <= pNewPosition.getY() + mHeight) {
+  if (Game::Instance()->getHeight() <= pNewPosition.getY() + mHeight) {
     return false;
   } else {
     for (
